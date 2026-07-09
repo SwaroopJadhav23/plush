@@ -15,12 +15,21 @@ const links = [
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [scrollProgress, setScrollProgress] = useState(0);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 30);
+    const onScroll = () => {
+      setScrolled(window.scrollY > 30);
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      setScrollProgress(docHeight > 0 ? window.scrollY / docHeight : 0);
+    };
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
+
+  const dispatchHover = (secId: string | null) => {
+    window.dispatchEvent(new CustomEvent('hover-section', { detail: secId }));
+  };
 
   return (
     <nav
@@ -32,8 +41,12 @@ export default function Navbar() {
     >
       <div className="max-w-7xl mx-auto px-5 flex items-center justify-between">
         {/* Logo wordmark */}
-        <a href="#hero" className="flex items-center gap-2">
-          {/* PLACEHOLDER: replace with logo1.jpg */}
+        <a
+          href="#hero"
+          className="flex items-center gap-2"
+          onMouseEnter={() => dispatchHover('hero')}
+          onMouseLeave={() => dispatchHover(null)}
+        >
           <div className="w-10 h-10 rounded-full bg-gradient-to-br from-rose to-berry flex items-center justify-center shadow-md">
             <span className="font-script text-cream text-lg leading-none">HC</span>
           </div>
@@ -48,6 +61,8 @@ export default function Navbar() {
             <a
               key={l.href}
               href={l.href}
+              onMouseEnter={() => dispatchHover(l.href.substring(1))}
+              onMouseLeave={() => dispatchHover(null)}
               className="text-sm font-medium text-charcoal hover:text-rose transition-colors duration-200"
             >
               {l.label}
@@ -107,6 +122,28 @@ export default function Navbar() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Mobile / Tablet Horizontal Stitched Progress Thread (sticky at top below sticky nav) */}
+      <div className="absolute bottom-0 left-0 w-full h-[3px] lg:hidden pointer-events-none bg-rose/10">
+        <div
+          className="h-full bg-transparent overflow-hidden"
+          style={{ width: `${scrollProgress * 100}%` }}
+        >
+          <div className="w-[100vw] h-full">
+            <svg className="w-full h-full" fill="none">
+              <line
+                x1="0"
+                y1="1.5"
+                x2="2000"
+                y2="1.5"
+                stroke="#8E2A46"
+                strokeWidth="3"
+                strokeDasharray="5, 3"
+              />
+            </svg>
+          </div>
+        </div>
+      </div>
     </nav>
   );
 }

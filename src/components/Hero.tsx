@@ -1,44 +1,15 @@
 import { useRef } from 'react';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { Instagram, ChevronDown } from 'lucide-react';
+import SectionCard from './SectionCard';
 
-// Decorative floating stitch-loop SVGs — each with independent motion
-const FloatingLoop = ({
-  className,
-  size = 40,
-  delay = 0,
-  duration = 5,
-  floatDist = 18,
-}: {
-  className?: string;
-  size?: number;
-  delay?: number;
-  duration?: number;
-  floatDist?: number;
-}) => (
-  <motion.svg
-    className={`absolute pointer-events-none ${className}`}
-    width={size}
-    height={size}
-    viewBox="0 0 40 40"
-    fill="none"
-    animate={{ y: [0, -floatDist, 0], rotate: [0, 8, 0] }}
-    transition={{
-      duration,
-      repeat: Infinity,
-      ease: 'easeInOut',
-      repeatType: 'mirror',
-      delay,
-    }}
-  >
-    <circle cx="20" cy="20" r="14" stroke="#E8829E" strokeWidth="2.5" fill="none" opacity="0.3" />
-    <circle cx="20" cy="20" r="9" stroke="#E0A93A" strokeWidth="2" fill="none" opacity="0.25" />
-  </motion.svg>
-);
+interface HeroProps {
+  introStage?: 'playing' | 'revealing' | 'complete';
+}
 
-export default function Hero() {
+export default function Hero({ introStage = 'complete' }: HeroProps) {
   // Mouse parallax — subtle 3D depth feel
-  const heroRef = useRef<HTMLElement>(null);
+  const heroRef = useRef<HTMLDivElement>(null);
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
 
@@ -62,30 +33,43 @@ export default function Hero() {
     mouseY.set(y);
   };
 
-  return (
-    <section
-      ref={heroRef}
-      id="hero"
-      onMouseMove={handleMouseMove}
-      className="relative min-h-screen flex items-center justify-center bg-blush overflow-hidden pt-20 pb-12"
-    >
-      {/* Floating decorative loops — independent durations so they don't sync */}
-      <FloatingLoop className="top-24 left-[8%]" size={50} delay={0} duration={5} floatDist={18} />
-      <FloatingLoop className="top-40 right-[12%]" size={35} delay={1.5} duration={4.5} floatDist={20} />
-      <FloatingLoop className="bottom-32 left-[15%]" size={45} delay={0.8} duration={6} floatDist={15} />
-      <FloatingLoop className="bottom-20 right-[8%]" size={30} delay={2.2} duration={4} floatDist={16} />
-      <FloatingLoop className="top-1/2 left-[5%]" size={28} delay={3} duration={5.5} floatDist={19} />
-      <FloatingLoop className="top-1/3 right-[5%]" size={55} delay={1} duration={6.5} floatDist={17} />
+  // Determine intro reveal state checks
+  const isPlaying = introStage === 'playing';
+  const isRevealing = introStage === 'revealing';
+  const isComplete = introStage === 'complete';
+  const startTrigger = !isPlaying;
 
-      <div className="relative z-10 max-w-4xl mx-auto px-5 text-center">
-        {/* Logo placeholder — fades/scales in first (0ms delay) */}
-        {/* PLACEHOLDER: replace with logo1.jpg */}
+  // Custom overrides for SectionCard unfolding
+  const cardInitial = isPlaying ? { opacity: 0, scale: 0.97, y: 20 } : undefined;
+  const cardAnimate = isPlaying 
+    ? { opacity: 0, scale: 0.97, y: 20 } 
+    : (isRevealing ? { opacity: 1, scale: 1, y: 0 } : undefined);
+  const cardTransition = isRevealing ? { duration: 0.6, ease: [0.16, 1, 0.3, 1] } : undefined;
+
+  return (
+    <SectionCard 
+      id="hero" 
+      className="min-h-[85vh] flex items-center justify-center pt-24 pb-16"
+      initialOverride={cardInitial}
+      animateOverride={cardAnimate}
+      transitionOverride={cardTransition}
+    >
+      <div 
+        ref={heroRef}
+        onMouseMove={handleMouseMove}
+        className="w-full h-full relative z-10 max-w-4xl mx-auto text-center flex flex-col justify-center"
+      >
+        {/* Logo placeholder — fades/scales in first */}
         <motion.div
           style={{ x: logoX, y: logoY }}
           initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.6, ease: 'easeOut' }}
-          className="mx-auto mb-6 w-28 h-28 rounded-full bg-gradient-to-br from-rose via-rose to-berry flex items-center justify-center shadow-xl ring-4 ring-cream"
+          animate={startTrigger ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
+          transition={{ 
+            duration: 0.6, 
+            ease: 'easeOut', 
+            delay: isRevealing ? 0.1 : 0.0 
+          }}
+          className="mx-auto mb-6 w-28 h-28 rounded-full bg-gradient-to-br from-rose via-rose to-berry flex items-center justify-center shadow-xl ring-4 ring-cream select-none pointer-events-none"
         >
           <span className="font-script text-cream text-4xl leading-none">
             The
@@ -94,43 +78,59 @@ export default function Hero() {
           </span>
         </motion.div>
 
-        {/* Sub-tagline — fades up at 150ms */}
+        {/* Sub-tagline */}
         <motion.p
           initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: 'easeOut', delay: 0.15 }}
+          animate={startTrigger ? { opacity: 1, y: 0 } : { opacity: 0, y: 15 }}
+          transition={{ 
+            duration: 0.6, 
+            ease: 'easeOut', 
+            delay: isRevealing ? 0.25 : 0.15 
+          }}
           className="font-script text-xl md:text-2xl text-mustard mb-2"
         >
           A corner for yarn • loops • hooks
         </motion.p>
 
-        {/* Headline — fades up with slight scale at 300ms */}
+        {/* Headline */}
         <motion.h1
           style={{ x: headlineX, y: headlineY }}
           initial={{ opacity: 0, y: 20, scale: 0.95 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ duration: 0.6, ease: 'easeOut', delay: 0.3 }}
+          animate={startTrigger ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 20, scale: 0.95 }}
+          transition={{ 
+            duration: 0.6, 
+            ease: 'easeOut', 
+            delay: isRevealing ? 0.4 : 0.3 
+          }}
           className="font-script text-6xl md:text-8xl text-berry font-bold leading-tight mb-4"
         >
           Selling Pinteresty Dreams
         </motion.h1>
 
-        {/* Subhead — fades up at 450ms */}
+        {/* Subhead */}
         <motion.p
           initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: 'easeOut', delay: 0.45 }}
-          className="text-lg md:text-xl text-charcoal max-w-2xl mx-auto mb-8 leading-relaxed"
+          animate={startTrigger ? { opacity: 1, y: 0 } : { opacity: 0, y: 15 }}
+          transition={{ 
+            duration: 0.6, 
+            ease: 'easeOut', 
+            delay: isRevealing ? 0.55 : 0.45 
+          }}
+          className="text-lg md:text-xl text-charcoal max-w-2xl mx-auto mb-8 leading-relaxed font-medium"
         >
           Handmade crochet, one loop at a time — bouquets, keychains, dolls &
           more, made just for you in Jaipur
         </motion.p>
 
-        {/* CTAs — fade up together at 600ms */}
+        {/* CTAs */}
         <motion.div
           initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: 'easeOut', delay: 0.6 }}
+          animate={startTrigger ? { opacity: 1, y: 0 } : { opacity: 0, y: 15 }}
+          transition={{ 
+            duration: 0.6, 
+            ease: 'easeOut', 
+            delay: isRevealing ? 0.7 : 0.6 
+          }}
           className="flex flex-col sm:flex-row gap-4 justify-center items-center"
         >
           <a
@@ -161,6 +161,7 @@ export default function Hero() {
       >
         <ChevronDown size={28} />
       </motion.a>
-    </section>
+    </SectionCard>
   );
 }
+
