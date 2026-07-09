@@ -1,51 +1,83 @@
 import React, { useEffect, useRef, useState } from 'react';
-import {
-  CrochetFlower,
-  CrochetHeart,
-  CrochetTeddy,
-  CrochetStar,
-  CrochetBow,
-  CrochetButterfly,
-  CrochetDaisy,
-  CrochetYarnBall,
-} from './CrochetAssets';
+
+// Premium SVG background assets
+const CloudSVG = ({ className }: { className?: string }) => (
+  <svg viewBox="0 0 100 60" fill="currentColor" className={className}>
+    <path d="M 20,40 A 15,15 0 0,1 35,20 A 20,20 0 0,1 65,20 A 15,15 0 0,1 80,40 A 10,10 0 0,1 80,45 L 20,45 A 10,10 0 0,1 20,40 Z" />
+  </svg>
+);
+
+const StarSVG = ({ className }: { className?: string }) => (
+  <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
+    <path d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.784 1.4 8.168L12 18.896l-7.334 3.857 1.4-8.168L.132 9.21l8.2-1.192z" />
+  </svg>
+);
+
+const SparkleSVG = ({ className }: { className?: string }) => (
+  <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
+    <path d="M12 0L14.6 9.4L24 12L14.6 14.6L12 24L9.4 14.6L0 12L9.4 9.4L12 0Z" />
+  </svg>
+);
+
+const HeartSVG = ({ className }: { className?: string }) => (
+  <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
+    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+  </svg>
+);
+
+const PawSVG = ({ className }: { className?: string }) => (
+  <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
+    <circle cx="7" cy="7" r="2.5" />
+    <circle cx="17" cy="7" r="2.5" />
+    <circle cx="12" cy="5" r="2.5" />
+    <path d="M12 9c-3.31 0-6 2.69-6 6 0 1.66.67 3.16 1.76 4.24L12 16.5l4.24 2.74C17.33 18.16 18 16.66 18 15c0-3.31-2.69-6-6-6z" />
+  </svg>
+);
+
+const BowSVG = ({ className }: { className?: string }) => (
+  <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
+    <path d="M4 6c-1.1 0-2 .9-2 2v2c0 1.1.9 2 2 2h2c.4 0 .8-.1 1.1-.3l1.9 1.9c-.3.3-.3.8-.3 1.2v2c0 1.1.9 2 2 2h2c1.1 0 2-.9 2-2v-2c0-.4-.1-.8-.3-1.2l1.9-1.9c.3.2.7.3 1.1.3h2c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-2c-.4 0-.8.1-1.1.3L12 8.2l-1.9-1.9c-.3-.2-.7-.3-1.1-.3H4zm2 2c0-.55.45-1 1-1h1c.55 0 1 .45 1 1v1c0 .55-.45 1-1 1H7c-.55 0-1-.45-1-1V8zm10 0c0-.55.45-1 1-1h1c.55 0 1 .45 1 1v1c0 .55-.45 1-1 1h-1c-.55 0-1-.45-1-1V8z" />
+  </svg>
+);
 
 const AssetComponents = [
-  CrochetFlower,
-  CrochetHeart,
-  CrochetTeddy,
-  CrochetStar,
-  CrochetBow,
-  CrochetButterfly,
-  CrochetDaisy,
-  CrochetYarnBall,
+  CloudSVG,   // 0
+  StarSVG,    // 1
+  SparkleSVG, // 2
+  HeartSVG,   // 3
+  PawSVG,     // 4
+  BowSVG,     // 5
 ];
 
-// Predefined slots to ensure a balanced, handcrafted feel and prevent overlapping center content
-const SLOTS = [
-  // Left column (X: 3% - 15%)
-  { x: 5, y: 4, type: 0 },
-  { x: 12, y: 14, type: 1 },
-  { x: 4, y: 24, type: 2 },
-  { x: 10, y: 34, type: 3 },
-  { x: 6, y: 46, type: 4 },
-  { x: 14, y: 56, type: 5 },
-  { x: 5, y: 66, type: 6 },
-  { x: 11, y: 76, type: 7 },
-  { x: 3, y: 86, type: 0 },
-  { x: 9, y: 94, type: 1 },
+// Predefined colors for background items to match our palette
+const colors = [
+  'text-candy',
+  'text-sky',
+  'text-sunny',
+  'text-mint',
+  'text-primary/40',
+];
 
-  // Right column (X: 85% - 97%)
-  { x: 92, y: 6, type: 2 },
-  { x: 86, y: 16, type: 3 },
-  { x: 94, y: 28, type: 4 },
-  { x: 88, y: 38, type: 5 },
-  { x: 91, y: 50, type: 6 },
-  { x: 85, y: 60, type: 7 },
-  { x: 93, y: 70, type: 0 },
-  { x: 87, y: 80, type: 1 },
-  { x: 95, y: 90, type: 2 },
-  { x: 89, y: 96, type: 3 },
+const SLOTS = [
+  // Left Side Slots
+  { x: 4, y: 5, type: 0, color: 1 },
+  { x: 12, y: 15, type: 1, color: 2 },
+  { x: 6, y: 28, type: 2, color: 0 },
+  { x: 15, y: 38, type: 3, color: 3 },
+  { x: 5, y: 50, type: 4, color: 4 },
+  { x: 10, y: 62, type: 5, color: 0 },
+  { x: 7, y: 75, type: 0, color: 2 },
+  { x: 14, y: 88, type: 2, color: 1 },
+  
+  // Right Side Slots
+  { x: 92, y: 8, type: 3, color: 0 },
+  { x: 84, y: 18, type: 0, color: 1 },
+  { x: 90, y: 30, type: 2, color: 2 },
+  { x: 87, y: 42, type: 4, color: 3 },
+  { x: 93, y: 55, type: 1, color: 4 },
+  { x: 85, y: 68, type: 5, color: 0 },
+  { x: 91, y: 80, type: 2, color: 1 },
+  { x: 88, y: 92, type: 3, color: 2 },
 ];
 
 interface FloatingItem {
@@ -53,6 +85,7 @@ interface FloatingItem {
   xPercent: number;
   yPercent: number;
   type: number;
+  colorClass: string;
   size: number;
   floatSpeed: number;
   floatAmpY: number;
@@ -75,40 +108,38 @@ export default function FloatingBackground({ isActive = true }: { isActive?: boo
   const rafRef = useRef<number | null>(null);
   const reducedMotionRef = useRef(false);
 
-  // Initialize slots and dimensions based on device size
   useEffect(() => {
-    // Check user accessibility preference
     reducedMotionRef.current = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     const width = window.innerWidth;
-    let count = 15; // default desktop
+    let count = SLOTS.length;
     if (width < 768) {
-      count = 5; // mobile
+      count = 6; // mobile
     } else if (width < 1024) {
-      count = 9; // tablet
+      count = 10; // tablet
     }
 
-    // Shuffle slots and select count
     const shuffled = [...SLOTS].sort(() => 0.5 - Math.random());
     const selected = shuffled.slice(0, count);
 
     const generated: FloatingItem[] = selected.map((slot, index) => {
       const isMobile = width < 768;
-      const baseSize = isMobile ? 35 : 55;
-      const sizeOffset = Math.random() * 20 - 10; // +/-10px
+      const baseSize = isMobile ? 24 : 42;
+      const sizeOffset = Math.random() * 15 - 5; // size variety
 
       return {
         id: index,
         xPercent: slot.x,
         yPercent: slot.y,
         type: slot.type,
+        colorClass: colors[slot.color],
         size: baseSize + sizeOffset,
-        floatSpeed: 0.8 + Math.random() * 1.2, // speed multiplier
-        floatAmpY: 6 + Math.random() * 6,     // 6px to 12px
-        floatAmpX: 2 + Math.random() * 3,     // 2px to 5px
-        floatAmpRot: 2 + Math.random() * 2,   // 2 to 4 degrees
+        floatSpeed: 0.5 + Math.random() * 0.8, // slow floats
+        floatAmpY: 8 + Math.random() * 8,
+        floatAmpX: 4 + Math.random() * 6,
+        floatAmpRot: 4 + Math.random() * 6,
         phase: Math.random() * Math.PI * 2,
-        parallaxSpeed: (Math.random() * 0.08 - 0.04), // subtle mobile parallax scroll multiplier (-0.04 to 0.04)
+        parallaxSpeed: (Math.random() * 0.06 - 0.03),
         currentPushX: 0,
         currentPushY: 0,
         currentRot: 0,
@@ -119,14 +150,12 @@ export default function FloatingBackground({ isActive = true }: { isActive?: boo
 
     setItems(generated);
 
-    // Keep track of scroll
     const handleScroll = () => {
       scrollRef.current = window.scrollY;
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
     handleScroll();
 
-    // Keep track of mouse (only on hover/fine pointers)
     const handleMouseMove = (e: MouseEvent) => {
       mouseRef.current = { x: e.clientX, y: e.clientY };
     };
@@ -143,7 +172,6 @@ export default function FloatingBackground({ isActive = true }: { isActive?: boo
     };
   }, []);
 
-  // requestAnimationFrame loop for animating items
   useEffect(() => {
     if (items.length === 0 || !isActive) return;
 
@@ -155,18 +183,14 @@ export default function FloatingBackground({ isActive = true }: { isActive?: boo
       items.forEach((item) => {
         if (!item.ref) return;
 
-        // Calculate absolute position on page
         const container = containerRef.current;
         if (!container) return;
 
         const docHeight = container.scrollHeight || document.documentElement.scrollHeight;
         const docWidth = window.innerWidth;
 
-        // Position in page space
         const pageX = (item.xPercent / 100) * docWidth;
         const pageY = (item.yPercent / 100) * docHeight;
-
-        // Convert to client (viewport) space
         const clientX = pageX;
         const clientY = pageY - scrollRef.current;
 
@@ -177,37 +201,32 @@ export default function FloatingBackground({ isActive = true }: { isActive?: boo
 
         if (!isReduced) {
           if (!isTouch) {
-            // Desktop Cursor Proximity Interaction
             const dx = clientX - mouseRef.current.x;
             const dy = clientY - mouseRef.current.y;
             const dist = Math.sqrt(dx * dx + dy * dy);
-            const threshold = 120; // 120px radius
+            const threshold = 180; // slightly wider detection for soft feel
 
             if (dist < threshold) {
-              const force = (threshold - dist) / threshold; // 0 at edge, 1 at cursor center
-              const pushDist = force * (10 + Math.random() * 8); // 10-18px push
+              const force = (threshold - dist) / threshold;
+              const pushDist = force * 20; 
               const angle = Math.atan2(dy, dx);
 
               targetPushX = Math.cos(angle) * pushDist;
               targetPushY = Math.sin(angle) * pushDist;
-              targetRot = force * 6 * (dx > 0 ? 1 : -1); // rotate slightly away
-              targetScale = 1.05;
+              targetRot = force * 10 * (dx > 0 ? 1 : -1);
+              targetScale = 1.1;
             }
           } else {
-            // Mobile Scroll Parallax Interaction
-            // Subtly shifts absolute positioning based on scroll percentage
             targetPushY = scrollRef.current * item.parallaxSpeed;
           }
         }
 
-        // Apply smooth interpolation (easing)
-        const easeFactor = 0.08; // smooth decay/increase
+        const easeFactor = 0.05; // softer interpolation
         item.currentPushX += (targetPushX - item.currentPushX) * easeFactor;
         item.currentPushY += (targetPushY - item.currentPushY) * easeFactor;
         item.currentRot += (targetRot - item.currentRot) * easeFactor;
         item.currentScale += (targetScale - item.currentScale) * easeFactor;
 
-        // Float Cycles (Sine/Cosine Waves) - disabled if prefers-reduced-motion
         let floatX = 0;
         let floatY = 0;
         let floatRot = 0;
@@ -215,17 +234,15 @@ export default function FloatingBackground({ isActive = true }: { isActive?: boo
         if (!isReduced) {
           const floatTime = timeSec * item.floatSpeed;
           floatY = Math.sin(floatTime + item.phase) * item.floatAmpY;
-          floatX = Math.cos(floatTime * 0.5 + item.phase) * item.floatAmpX;
-          floatRot = Math.sin(floatTime * 0.3 + item.phase) * item.floatAmpRot;
+          floatX = Math.cos(floatTime * 0.4 + item.phase) * item.floatAmpX;
+          floatRot = Math.sin(floatTime * 0.2 + item.phase) * item.floatAmpRot;
         }
 
-        // Combine base position + float + proximity displacement
         const totalX = floatX + item.currentPushX;
         const totalY = floatY + item.currentPushY;
         const totalRot = floatRot + item.currentRot;
         const scaleStr = isReduced ? '1' : item.currentScale.toFixed(4);
 
-        // Apply styles directly for extreme performance (triggers GPU layers)
         item.ref.style.transform = `translate3d(${totalX.toFixed(2)}px, ${totalY.toFixed(2)}px, 0) rotate(${totalRot.toFixed(2)}deg) scale(${scaleStr})`;
       });
 
@@ -237,13 +254,19 @@ export default function FloatingBackground({ isActive = true }: { isActive?: boo
     return () => {
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
-  }, [items]);
+  }, [items, isActive]);
 
   return (
     <div
       ref={containerRef}
-      className="absolute top-0 left-0 right-0 bottom-0 w-full h-full pointer-events-none z-[10] overflow-hidden"
+      className="absolute inset-0 w-full h-full pointer-events-none z-[10] overflow-hidden bg-bgMain"
     >
+      {/* Dynamic slow gradient background blobs */}
+      <div className="absolute top-[10%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-gradient-to-br from-candy/10 to-[#7C3AED]/5 filter blur-[100px] animate-float-slow pointer-events-none" />
+      <div className="absolute bottom-[20%] right-[-10%] w-[60vw] h-[60vw] rounded-full bg-gradient-to-br from-sky/15 to-mint/10 filter blur-[120px] animate-float-slower pointer-events-none" />
+      <div className="absolute top-[60%] left-[20%] w-[35vw] h-[35vw] rounded-full bg-gradient-to-br from-sunny/10 to-candy/5 filter blur-[90px] animate-float-slowest pointer-events-none" />
+
+      {/* Floating decorative elements */}
       {items.map((item) => {
         const SVGComponent = AssetComponents[item.type];
         return (
@@ -258,9 +281,9 @@ export default function FloatingBackground({ isActive = true }: { isActive?: boo
               height: `${item.size}px`,
               willChange: 'transform',
             }}
-            className="transition-opacity duration-300 opacity-[18%] md:opacity-[22%] max-md:opacity-[12%]"
+            className={`transition-opacity duration-300 opacity-[14%] hover:opacity-[40%] ${item.colorClass} drop-shadow-sm`}
           >
-            <SVGComponent className="w-full h-full drop-shadow-[0_2px_5px_rgba(142,42,70,0.15)]" />
+            <SVGComponent className="w-full h-full" />
           </div>
         );
       })}

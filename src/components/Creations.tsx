@@ -1,315 +1,392 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
-import { MessageCircle } from 'lucide-react';
-import SectionCard from './SectionCard';
+import { MessageCircle, Star, Sparkles } from 'lucide-react';
 
-type Category =
-  | 'Florals & Bouquets'
-  | 'Keychains'
-  | 'Amigurumi & Dolls'
-  | 'Scrunchies & Hair Accessories'
-  | 'Phone Charms';
+export type Universe = 'Pokémon' | 'Sanrio' | 'Anime' | 'Cute Animals' | 'Trending' | 'New Arrivals';
 
-const categories: (Category | 'All')[] = [
-  'All',
-  'Florals & Bouquets',
-  'Keychains',
-  'Amigurumi & Dolls',
-  'Scrunchies & Hair Accessories',
-  'Phone Charms',
+export interface Product {
+  id: number;
+  slug: string;
+  name: string;
+  universe: Universe;
+  src: string;
+  price: string;
+  description: string;
+  badge?: string;
+  floatingDecos: string[]; // Emojis or descriptions
+}
+
+export const universesList: { name: Universe; bg: string; text: string; plush: string; decos: string[]; tag: string }[] = [
+  { name: 'Pokémon', bg: 'bg-gradient-soft-yellow border-sunny/20', text: 'text-sunny', plush: '/snorlax.png', decos: ['⚡', '💤', '⭐'], tag: 'Gotta Catch Em All!' },
+  { name: 'Sanrio', bg: 'bg-gradient-soft-pink border-candy/20', text: 'text-candy', plush: '/loopy.png', decos: ['🎀', '🌸', '💖'], tag: 'Cute & Magical' },
+  { name: 'Anime', bg: 'bg-gradient-soft-purple border-primary/20', text: 'text-primary', plush: '/purple_long.png', decos: ['✨', '☁️', '🔮'], tag: 'Otaku Favorites' },
+  { name: 'Cute Animals', bg: 'bg-gradient-soft-mint border-mint/20', text: 'text-mint', plush: '/bunny.png', decos: ['🐾', '🥕', '☘️'], tag: 'Fluffy Friends' },
+  { name: 'Trending', bg: 'bg-gradient-soft-blue border-sky/20', text: 'text-sky', plush: '/lotso.png', decos: ['🔥', '👑', '💫'], tag: 'Viral Sensation' },
+  { name: 'New Arrivals', bg: 'bg-gradient-soft-primary border-primary/10', text: 'text-primary', plush: '/bear.png', decos: ['🆕', '✨', '🎁'], tag: 'Just Landed!' },
 ];
 
-type Creation = {
-  id: number;
-  seed: string;
-  w: number;
-  h: number;
-  category: Category;
-  name: string;
-  // Future ready attributes
-  price?: string;
-  productId?: string;
-  description?: string;
-  images?: string[];
-  sizes?: string[];
-  colors?: string[];
-  customNotes?: string;
+export const products: Product[] = [
+  {
+    id: 1,
+    slug: 'lotso-bear',
+    name: 'Strawberry Lotso Bear',
+    universe: 'Trending',
+    src: '/lotso.png',
+    price: '₹1,299',
+    description: 'This premium imported Lotso bear is super fluffy and smells like sweet fresh strawberries! Features a big squishy nose and cuddly posture. Perfect for Toy Story fans.',
+    badge: 'Best Seller',
+    floatingDecos: ['🔥', '🍓'],
+  },
+  {
+    id: 2,
+    slug: 'snorlax',
+    name: 'Lazy Sleepy Snorlax',
+    universe: 'Pokémon',
+    src: '/snorlax.png',
+    price: '₹1,499',
+    description: 'Snorlax is ready for a nap! Made with ultra-soft velocity fabric and premium squishy micro-fill. The ultimate cuddle companion for Pokemon masters.',
+    badge: 'Cozy Pick',
+    floatingDecos: ['💤', '⚡'],
+  },
+  {
+    id: 3,
+    slug: 'loopy',
+    name: 'Cute Pink Loopy Beaver',
+    universe: 'Sanrio',
+    src: '/loopy.png',
+    price: '₹1,199',
+    description: 'The super viral pink beaver Loopy! Features extremely soft pink fur, adorable round cheeks, and her signature cute expression. Imported premium quality.',
+    badge: 'Viral',
+    floatingDecos: ['🎀', '🌸'],
+  },
+  {
+    id: 4,
+    slug: 'bow-bunny',
+    name: 'Dreamy Bow Bunny',
+    universe: 'Cute Animals',
+    src: '/bunny.png',
+    price: '₹999',
+    description: 'A beautiful white bunny plush toy with soft pink inner ears and a tiny cute bow tie. Features standard LINE Japanese aesthetics and an incredibly soft touch.',
+    badge: 'Cute',
+    floatingDecos: ['🐰', '✨'],
+  },
+  {
+    id: 5,
+    slug: 'hoodie-bear',
+    name: 'Hoodie Bear Plush',
+    universe: 'Cute Animals',
+    src: '/bear.png',
+    price: '₹1,099',
+    description: 'A cute chubby brown bear wearing a cozy removable sunny yellow hoodie. Crafted with premium velvet plush fabric. Makes an amazing gift.',
+    badge: 'Popular',
+    floatingDecos: ['🐻', '💛'],
+  },
+  {
+    id: 6,
+    slug: 'purple-long-cat',
+    name: 'Purple Long Hugging Cat',
+    universe: 'New Arrivals',
+    src: '/purple_long.png',
+    price: '₹1,599',
+    description: 'An extra-long cylindrical purple cat body pillow plush. Ideal for sleeping, side-hugging, and relaxing. Made from high-elasticity fabric that holds its shape.',
+    badge: 'New',
+    floatingDecos: ['🆕', '🔮'],
+  },
+  {
+    id: 7,
+    slug: 'gengar',
+    name: 'Kawaii Gengar Spooky',
+    universe: 'Anime',
+    src: '/purple_long.png', // Fallback reuse
+    price: '₹1,299',
+    description: 'A custom anime-inspired chubby purple shadow creature plush. Cute spooky vibes, soft texture, and premium double stitching.',
+    badge: 'Spooky Cute',
+    floatingDecos: ['😈', '✨'],
+  },
+  {
+    id: 8,
+    slug: 'bunny-mini',
+    name: 'Blossom Bunny Mini',
+    universe: 'Sanrio',
+    src: '/bunny.png', // Fallback reuse
+    price: '₹899',
+    description: 'A mini version of our dreamy bunny, holding a small cherry blossom flower. Extremely soft and collectible.',
+    badge: 'Limited',
+    floatingDecos: ['🌸', '💝'],
+  },
+];
+
+// Helper to resolve specific portal hover particles
+const getPortalParticles = (universe: string) => {
+  if (universe === 'Pokémon') return ['⚡', '⚡', '⭐', '💤', '⚡'];
+  if (universe === 'Sanrio') return ['💖', '🎀', '🌸', '💝', '💖'];
+  if (universe === 'Anime') return ['🌸', '✨', '🌸', '🔮', '🌸'];
+  if (universe === 'Cute Animals') return ['🐾', '🥕', '🐾', '🐰', '🐾'];
+  if (universe === 'Trending') return ['🔥', '✨', '👑', '💫', '✨'];
+  return ['🎁', '🎉', '✨', '🎈', '🎉']; // New Arrivals / Confetti
 };
 
-const creations: Creation[] = [
-  { id: 1, seed: 'crochet1', w: 400, h: 500, category: 'Florals & Bouquets', name: 'Rose Bouquet' },
-  { id: 2, seed: 'crochet2', w: 400, h: 450, category: 'Keychains', name: 'Mini Heart Keychain' },
-  { id: 3, seed: 'crochet3', w: 400, h: 550, category: 'Amigurumi & Dolls', name: 'Bunny Amigurumi' },
-  { id: 4, seed: 'crochet4', w: 400, h: 480, category: 'Scrunchies & Hair Accessories', name: 'Puff Scrunchie' },
-  { id: 5, seed: 'crochet5', w: 400, h: 520, category: 'Phone Charms', name: 'Strawberry Phone Charm' },
-  { id: 6, seed: 'crochet6', w: 400, h: 460, category: 'Florals & Bouquets', name: 'Sunflower Bouquet' },
-  { id: 7, seed: 'crochet7', w: 400, h: 540, category: 'Keychains', name: 'Strawberry Keychain' },
-  { id: 8, seed: 'crochet8', w: 400, h: 500, category: 'Amigurumi & Dolls', name: 'Bear Amigurumi' },
-  { id: 9, seed: 'crochet9', w: 400, h: 470, category: 'Scrunchies & Hair Accessories', name: 'Flower Hair Clip' },
-  { id: 10, seed: 'crochet10', w: 400, h: 530, category: 'Phone Charms', name: 'Heart Phone Charm' },
-  { id: 11, seed: 'crochet11', w: 400, h: 490, category: 'Florals & Bouquets', name: 'Tulip Bouquet' },
-];
-
-function CreationCard({ c, onSelect }: { c: Creation; onSelect: (c: Creation) => void }) {
-  return (
-    <div
-      onClick={() => onSelect(c)}
-      tabIndex={0}
-      role="button"
-      aria-label={`Order ${c.name} on WhatsApp`}
-      onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          onSelect(c);
-          e.preventDefault();
-        }
-      }}
-      className="relative group rounded-2xl overflow-hidden bg-cream break-inside-avoid mb-4 border border-charcoal/5 cursor-pointer shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-300 focus-visible:ring-4 focus-visible:ring-rose focus-visible:outline-none"
-    >
-      {/* Product Image */}
-      <img
-        src={`/${(c.id - 1) % 10 + 1}.jpeg`}
-        alt={c.name}
-        loading="lazy"
-        className="w-full h-auto block transition-transform duration-500 ease-out group-hover:scale-[1.03]"
-      />
-
-      {/* Loose thread unravel — SVG path draw-on animation on hover */}
-      <svg
-        className="absolute inset-0 w-full h-full pointer-events-none"
-        viewBox="0 0 100 100"
-        preserveAspectRatio="none"
-      >
-        <line
-          x1="2" y1="98" x2="98" y2="2"
-          stroke="#E0A93A"
-          strokeWidth="0.8"
-          strokeDasharray="3 2"
-          fill="none"
-          className="thread-line"
-        />
-      </svg>
-
-      {/* Pinterest-Style Order Pill */}
-      <div
-        className="absolute top-3 right-3 z-30 order-pill text-cream pointer-events-none select-none opacity-95"
-        aria-hidden="true"
-      >
-        <span className="text-xs leading-none">💬</span>
-        <div className="order-pill-text text-[11px] font-bold uppercase tracking-wider leading-none">
-          <span>Order</span>
-          <span className="order-pill-extra leading-none">on WhatsApp</span>
-        </div>
-      </div>
-
-      {/* Product Name overlay (subtle bottom strip on hover) */}
-      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-charcoal/70 to-transparent p-4 pt-12 translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none">
-        <h4 className="text-xs font-bold text-cream truncate">
-          {c.name}
-        </h4>
-      </div>
-    </div>
-  );
+// SECTION 3: Choose Your Universe category portals
+interface UniversePortalsProps {
+  selectedUniverse: Universe | 'All';
+  onSelectUniverse: (u: Universe | 'All') => void;
 }
 
-function OrderModal({ c, onClose }: { c: Creation; onClose: () => void }) {
-  const modalRef = useRef<HTMLDivElement>(null);
+export function UniversePortals({ selectedUniverse, onSelectUniverse }: UniversePortalsProps) {
   const shouldReduceMotion = useReducedMotion();
-
-  // Escape key handler
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [onClose]);
-
-  // Focus trap handler
-  useEffect(() => {
-    const originalFocus = document.activeElement as HTMLElement;
-
-    // Focus the modal card or first button inside
-    const focusable = modalRef.current?.querySelectorAll('button, a');
-    if (focusable && focusable.length > 0) {
-      (focusable[0] as HTMLElement).focus();
-    }
-
-    const handleTab = (e: KeyboardEvent) => {
-      if (e.key !== 'Tab') return;
-      if (!modalRef.current) return;
-
-      const elements = modalRef.current.querySelectorAll(
-        'button, a, [tabindex]:not([tabindex="-1"])'
-      ) as NodeListOf<HTMLElement>;
-
-      if (elements.length === 0) return;
-
-      const first = elements[0];
-      const last = elements[elements.length - 1];
-
-      if (e.shiftKey) {
-        if (document.activeElement === first) {
-          last.focus();
-          e.preventDefault();
-        }
-      } else {
-        if (document.activeElement === last) {
-          first.focus();
-          e.preventDefault();
-        }
-      }
-    };
-
-    window.addEventListener('keydown', handleTab);
-    return () => {
-      window.removeEventListener('keydown', handleTab);
-      if (originalFocus && typeof originalFocus.focus === 'function') {
-        originalFocus.focus();
-      }
-    };
-  }, []);
-
-  const handleContinue = () => {
-    const productName = c.name || 'Selected Crochet Creation';
-    const currentURL = window.location.href;
-    const message = `Hello 👋\n\nI'm interested in ordering this crochet creation from The Half Code.\n\nProduct:\n${productName}\n\nProduct URL:\n${currentURL}\n\nPlease share the price and ordering details.\n\nThank you ❤️`;
-    const encoded = encodeURIComponent(message);
-    const waUrl = `https://wa.me/918530595740?text=${encoded}`;
-    window.open(waUrl, '_blank');
-    onClose();
-  };
+  const [hoveredCard, setHoveredCard] = useState<string | null>(null);
 
   return (
-    <div
-      onClick={(e) => {
-        if (e.target === e.currentTarget) onClose();
-      }}
-      className="fixed inset-0 bg-charcoal/40 backdrop-blur-sm z-[9500] flex items-center justify-center p-4"
-    >
-      <motion.div
-        ref={modalRef}
-        initial={shouldReduceMotion ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.95 }}
-        transition={{ duration: 0.25, ease: 'easeOut' }}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="modal-title"
-        className="bg-[#FFFAF6] border-2 border-rose rounded-[24px] shadow-2xl max-w-sm w-full p-6 relative overflow-hidden flex flex-col"
-      >
-        {/* Product Image preview inside modal */}
-        <div className="w-full h-44 overflow-hidden rounded-xl mb-4 border border-charcoal/5">
-          <img
-            src={`/${(c.id - 1) % 10 + 1}.jpeg`}
-            alt={c.name}
-            className="w-full h-full object-cover"
-          />
+    <section id="universe" className="relative w-full py-24 bg-gradient-to-b from-[#F0F4FF] to-[#FAF5FF] px-6 md:px-12 lg:px-20 overflow-hidden">
+      
+      {/* Drifting Clouds background */}
+      <div className="absolute inset-0 pointer-events-none opacity-30 select-none overflow-hidden">
+        <div className="absolute top-[20%] right-[-10%] w-60 h-28 bg-white rounded-full blur-xl animate-float-slow" />
+        <div className="absolute bottom-[10%] left-[-10%] w-80 h-36 bg-white rounded-full blur-xl animate-float-slower" />
+      </div>
+
+      <div className="max-w-[1600px] mx-auto relative z-10">
+        
+        {/* Section Header */}
+        <div className="text-center mb-16 relative">
+          <span className="text-xs font-bold uppercase tracking-[0.2em] text-primary bg-primary/5 px-4 py-1.5 rounded-full mb-3 inline-block">
+            Choose Your Universe
+          </span>
+          <h2 className="font-heading text-4xl md:text-5xl text-darkText font-extrabold mb-4 leading-tight select-none">
+            Step Into The Portals.
+          </h2>
+          <p className="font-body text-base text-darkText/70 max-w-xl mx-auto">
+            Click on a magical portal below to filter character collections dynamically. Watch them float and spark to life!
+          </p>
         </div>
 
-        {/* Modal Header */}
-        <h3 id="modal-title" className="font-script text-3xl text-berry text-center mb-1 font-bold">
-          Order this Crochet Creation?
-        </h3>
-        <p className="text-xs text-charcoal/70 text-center mb-4 leading-relaxed px-1">
-          You're about to order this handmade crochet creation through WhatsApp. Would you like to continue?
-        </p>
+        {/* Portal Cards Grid */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+          {universesList.map((u) => {
+            const isSelected = selectedUniverse === u.name;
+            const isHovered = hoveredCard === u.name;
+            return (
+              <motion.div
+                key={u.name}
+                onClick={() => onSelectUniverse(isSelected ? 'All' : u.name)}
+                onMouseEnter={() => setHoveredCard(u.name)}
+                onMouseLeave={() => setHoveredCard(null)}
+                whileHover={shouldReduceMotion ? {} : { y: -10, scale: 1.03 }}
+                whileTap={{ scale: 0.95 }}
+                className={`cursor-pointer rounded-[32px] p-6 border-2 text-center relative overflow-hidden transition-all duration-300 group ${
+                  isSelected
+                    ? 'bg-white shadow-[0_15px_35px_rgba(124,58,237,0.18)] border-primary ring-2 ring-primary/10'
+                    : 'bg-white/80 backdrop-blur-sm hover:shadow-[0_12px_30px_rgba(0,0,0,0.04)] border-darkText/5'
+                }`}
+              >
+                {/* Glowing portal background */}
+                <div className={`absolute inset-0 opacity-20 group-hover:opacity-40 transition-opacity duration-300 ${u.bg}`} />
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-radial-glow blur-md pointer-events-none" />
 
-        {/* Product Detail Selection Section */}
-        <div className="bg-cream border border-charcoal/5 rounded-xl px-4 py-2.5 mb-5 flex flex-col justify-center">
-          <span className="text-[9px] text-charcoal/50 uppercase tracking-wider font-bold">Product</span>
-          <span className="text-sm font-bold text-berry truncate">{c.name || 'Selected Crochet Creation'}</span>
+                {/* Floating portal particles on hover */}
+                {isHovered && !shouldReduceMotion && (
+                  <>
+                    {getPortalParticles(u.name).map((symbol, idx) => (
+                      <motion.span
+                        key={idx}
+                        initial={{ opacity: 0, scale: 0.5, y: 15, x: 0 }}
+                        animate={{
+                          opacity: [0, 1, 1, 0],
+                          scale: [0.7, 1.3, 0.8],
+                          y: [-25 - Math.random() * 45],
+                          x: [Math.sin(idx) * 20],
+                        }}
+                        transition={{
+                          duration: 1.4,
+                          repeat: Infinity,
+                          delay: idx * 0.15,
+                        }}
+                        className="absolute text-[12px] pointer-events-none select-none z-30"
+                        style={{
+                          left: `${15 + idx * 16}%`,
+                          top: '12%',
+                        }}
+                      >
+                        {symbol}
+                      </motion.span>
+                    ))}
+                  </>
+                )}
+
+                {/* Featured plush character bouncing inside card */}
+                <div className="relative w-18 h-18 mx-auto mb-4 flex items-center justify-center">
+                  <motion.img
+                    src={u.plush}
+                    alt={u.name}
+                    animate={
+                      isSelected || isHovered
+                        ? { y: [0, -8, 0] }
+                        : {}
+                    }
+                    transition={{ duration: 1.1, repeat: Infinity, ease: 'easeInOut' }}
+                    className="w-full h-full object-contain filter drop-shadow-md group-hover:scale-115 transition-transform duration-300 z-10"
+                  />
+                </div>
+
+                {/* Portal metadata */}
+                <div className="relative z-10 mt-1">
+                  <h3 className="font-heading font-bold text-darkText text-sm group-hover:text-primary transition-colors leading-tight">
+                    {u.name}
+                  </h3>
+                  <span className="text-[9px] text-darkText/50 font-bold block truncate mt-1.5 uppercase tracking-wider">
+                    {u.tag}
+                  </span>
+                </div>
+              </motion.div>
+            );
+          })}
         </div>
 
-        {/* Future Ready Slots (Prices, quantity, options ready for expansion) */}
-        {/*
-          c.price && <div className="text-xs font-semibold text-berry">Price: {c.price}</div>
-          c.productId && <div className="text-[10px] text-charcoal/40">ID: {c.productId}</div>
-          c.sizes && <div className="text-xs">Sizes: {c.sizes.join(', ')}</div>
-          c.colors && <div className="text-xs">Colors: {c.colors.join(', ')}</div>
-        */}
-
-        {/* Action Buttons */}
-        <div className="flex flex-col gap-2">
-          <button
-            onClick={handleContinue}
-            className="w-full bg-rose text-cream font-semibold py-3 px-5 rounded-full flex items-center justify-center gap-2 hover:bg-berry hover:-translate-y-0.5 shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer"
-          >
-            <span className="text-base leading-none">💬</span>
-            <span className="leading-none">Continue on WhatsApp</span>
-          </button>
-          
-          <button
-            onClick={onClose}
-            className="w-full border-2 border-rose/30 text-rose font-semibold py-2.5 px-5 rounded-full hover:border-rose hover:text-berry transition-all duration-300 cursor-pointer"
-          >
-            Maybe Later
-          </button>
-        </div>
-      </motion.div>
-    </div>
+      </div>
+    </section>
   );
 }
 
-export default function Creations() {
-  const [filter, setFilter] = useState<Category | 'All'>('All');
-  const [selectedProduct, setSelectedProduct] = useState<Creation | null>(null);
+// SECTION 5: Trending Plush Collection Products grid
+interface TrendingCollectionProps {
+  selectedUniverse: Universe | 'All';
+  onSelectUniverse: (u: Universe | 'All') => void;
+}
 
-  const filtered =
-    filter === 'All' ? creations : creations.filter((c) => c.category === filter);
+export function TrendingCollection({ selectedUniverse, onSelectUniverse }: TrendingCollectionProps) {
+  const shouldReduceMotion = useReducedMotion();
+  const [hoveredCard, setHoveredCard] = useState<number | null>(null);
+
+  const filteredProducts = selectedUniverse === 'All'
+    ? products
+    : products.filter(p => p.universe === selectedUniverse);
 
   return (
-    <SectionCard id="creations">
-      <div className="text-center mb-10">
-        <p className="font-script text-2xl text-mustard mb-1">our gallery</p>
-        <h2 className="font-script text-4xl md:text-6xl text-berry font-bold mb-2">
-          Our Creations
-        </h2>
-        <p className="text-sm text-charcoal/70">
-          Pinteresty dreams, stitched into reality
-        </p>
-      </div>
+    <section id="trending" className="relative w-full py-24 bg-white px-6 md:px-12 lg:px-20 border-t border-b border-darkText/[0.02] overflow-hidden">
+      
+      {/* Tiny drifting elements */}
+      <div className="absolute top-[10%] left-[5%] w-2 h-2 bg-candy/25 rounded-full animate-ping opacity-30 pointer-events-none" />
+      <div className="absolute bottom-[20%] right-[5%] w-2.5 h-2.5 bg-sky/20 rounded-full animate-ping opacity-45 pointer-events-none" />
 
-      {/* Filter tabs */}
-      <div className="flex flex-wrap justify-center gap-2 mb-10">
-        {categories.map((cat) => (
-          <button
-            key={cat}
-            onClick={() => setFilter(cat)}
-            className={`text-xs md:text-sm font-medium px-4 py-2 rounded-full transition-all duration-200 ${
-              filter === cat
-                ? 'bg-rose text-cream shadow-md'
-                : 'bg-blush text-berry hover:bg-rose/30'
-            }`}
+      <div className="max-w-[1600px] mx-auto relative z-10">
+        
+        {/* Header */}
+        <div className="text-center mb-16">
+          <span className="text-xs font-bold uppercase tracking-[0.2em] text-candy bg-candy/5 px-4 py-1.5 rounded-full mb-3 inline-block">
+            Trending Collections
+          </span>
+          <h2 className="font-heading text-4xl md:text-5xl text-darkText font-extrabold mb-4 leading-tight select-none">
+            Popular In The Universe
+          </h2>
+          <p className="font-body text-base text-darkText/75 max-w-lg mx-auto">
+            Delight in our premium imported collectibles. Hover to see them spark, click to explore their magical stories!
+          </p>
+        </div>
+
+        {/* Reset filters */}
+        {selectedUniverse !== 'All' && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="flex justify-center -mt-8 mb-12"
           >
-            {cat}
-          </button>
-        ))}
-      </div>
-
-      {/* Masonry gallery */}
-      <motion.div layout className="masonry">
-        <AnimatePresence>
-          {filtered.map((c) => (
-            <motion.div
-              key={c.id}
-              layout
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-              transition={{ duration: 0.3 }}
+            <button
+              onClick={() => onSelectUniverse('All')}
+              className="text-xs font-bold text-primary bg-primary/5 hover:bg-primary hover:text-white border border-primary/20 px-4 py-2 rounded-full transition-all duration-300 flex items-center gap-1.5"
             >
-              <CreationCard c={c} onSelect={setSelectedProduct} />
-            </motion.div>
-          ))}
-        </AnimatePresence>
-      </motion.div>
-
-      {/* WhatsApp Confirmation Order Modal */}
-      <AnimatePresence>
-        {selectedProduct && (
-          <OrderModal c={selectedProduct} onClose={() => setSelectedProduct(null)} />
+              <span>Reset filter to view all universes</span>
+              <span>✕</span>
+            </button>
+          </motion.div>
         )}
-      </AnimatePresence>
-    </SectionCard>
+
+        {/* Grid layout (Up to 5 columns on large screen monitors, gap: 32px) */}
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-8">
+          <AnimatePresence mode="popLayout">
+            {filteredProducts.map((p) => {
+              const isHovered = hoveredCard === p.id;
+              return (
+                <motion.div
+                  key={p.id}
+                  layout
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ duration: 0.35 }}
+                  onMouseEnter={() => setHoveredCard(p.id)}
+                  onMouseLeave={() => setHoveredCard(null)}
+                  onClick={() => {
+                    window.location.hash = `#/products/${p.slug}`;
+                  }}
+                  className="relative group rounded-[32px] bg-white border border-darkText/5 shadow-[0_4px_22px_rgba(0,0,0,0.02)] hover:shadow-[0_24px_45px_rgba(124,58,237,0.08)] hover:-translate-y-2 transition-all duration-300 cursor-pointer overflow-hidden flex flex-col justify-between"
+                >
+                  {/* Image container */}
+                  <div className="w-full aspect-square bg-[#F8FAFF] overflow-hidden flex items-center justify-center p-8 relative">
+                    {/* Glowing background representation */}
+                    <div className="absolute inset-0 bg-gradient-to-tr from-sky/5 to-candy/5 opacity-50 group-hover:opacity-85 transition-opacity" />
+
+                    <img
+                      src={p.src}
+                      alt={p.name}
+                      loading="lazy"
+                      className="w-[85%] h-[85%] object-contain transition-transform duration-500 ease-out group-hover:scale-108 filter drop-shadow-md relative z-10"
+                    />
+
+                    {/* Twinkling stars popping up on hover */}
+                    <div className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-15">
+                      <Star className="absolute text-sunny fill-sunny w-4.5 h-4.5 top-4 left-4 animate-twinkle" />
+                      <Star className="absolute text-sky fill-sky w-4 h-4 bottom-6 right-6 animate-twinkle delay-100" />
+                      <Sparkles className="absolute text-candy w-4.5 h-4.5 top-6 right-8 animate-pulse" />
+                    </div>
+
+                    {/* Universe Badge */}
+                    <span className="absolute bottom-4 left-4 text-[9px] font-bold uppercase tracking-wider bg-white/95 backdrop-blur-sm border border-darkText/5 text-darkText px-3 py-1.5 rounded-full shadow-sm z-20">
+                      {p.universe}
+                    </span>
+
+                    {/* Promotional tag badge */}
+                    {p.badge && (
+                      <span className="absolute top-4 left-4 text-[9px] font-bold uppercase tracking-wider bg-candy text-white px-3 py-1.5 rounded-full shadow-sm z-20 animate-pulse">
+                        {p.badge}
+                      </span>
+                    )}
+
+                    {/* Expanded order on WhatsApp tag badge on top-right */}
+                    <div className="absolute top-4 right-4 z-25 order-pill text-white pointer-events-none select-none">
+                      <MessageCircle size={15} className="text-white fill-white" />
+                      <div className="order-pill-text text-[9px] font-heading font-bold uppercase tracking-wider leading-none">
+                        <span>Order</span>
+                        <span className="order-pill-extra">on WhatsApp</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Character descriptive info section */}
+                  <div className="p-6 flex-1 flex flex-col justify-between border-t border-darkText/[0.03]">
+                    <div>
+                      <h4 className="font-heading font-bold text-darkText text-base mb-1.5 truncate group-hover:text-primary transition-colors">
+                        {p.name}
+                      </h4>
+                      <p className="text-xs text-darkText/60 line-clamp-2 leading-relaxed font-medium">
+                        {p.description}
+                      </p>
+                    </div>
+                    <div className="flex items-center justify-between mt-5">
+                      <span className="font-heading font-extrabold text-primary text-lg">
+                        {p.price}
+                      </span>
+                      <span className="text-[10px] font-bold text-candy flex items-center gap-1 group-hover:underline">
+                        <span>Meet This Plush</span>
+                        <span>→</span>
+                      </span>
+                    </div>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </AnimatePresence>
+        </div>
+      </div>
+    </section>
   );
 }

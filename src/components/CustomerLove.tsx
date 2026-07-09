@@ -1,85 +1,176 @@
 import { motion } from 'framer-motion';
-import { Star, Quote } from 'lucide-react';
-import SectionCard from './SectionCard';
+import { Star, Sparkles } from 'lucide-react';
 
-const testimonials = [
+const reviews = [
   {
-    quote: 'Ordered a custom bouquet and it\'s honestly better than real flowers 😭',
-    author: 'Aanya',
+    quote: "Plush.Palz is literally a dream! I ordered the Snorlax plushie and it's the squishiest thing I own. Delivered in just 3 days! 💤",
+    author: 'Rhea Sen',
+    location: 'New Delhi',
+    avatar: '🐰',
+    avatarBg: 'bg-gradient-soft-pink',
+    floatDelay: 0,
+    mascotSrc: '/snorlax.png',
+    mascotClass: 'w-20 h-20 -top-10 -right-6',
+  },
+  {
+    quote: "Oh my god, the strawberry Lotso bear actually smells like fresh strawberries! WhatsApp support was incredibly helpful and sweet! 🍓",
+    author: 'Kabir Mehta',
     location: 'Mumbai',
+    avatar: '🐻',
+    avatarBg: 'bg-gradient-soft-yellow',
+    floatDelay: 0.4,
+    mascotSrc: '/lotso.png',
+    mascotClass: 'w-20 h-20 -bottom-8 -right-4',
   },
   {
-    quote: 'The keychain is SO cute, exactly like the pic',
-    author: 'Sneha',
-    location: 'Delhi',
-  },
-  {
-    quote: 'Fast shipping, packaging was so pretty too',
-    author: 'Priya',
+    quote: "The Loopy plushie is viral for a reason, and it is so hard to find genuine ones in India. Thank you for importing these cute treasures! 💖",
+    author: 'Anjali Nair',
     location: 'Bangalore',
+    avatar: '🐱',
+    avatarBg: 'bg-gradient-soft-blue',
+    floatDelay: 0.2,
+    mascotSrc: '/loopy.png',
+    mascotClass: 'w-22 h-22 -top-12 -left-6',
+  },
+  {
+    quote: "Super premium quality and incredibly safe packaging. It arrived in a thick carton box with dust wrapping. 10/10 service!",
+    author: 'Devansh Roy',
+    location: 'Kolkata',
+    avatar: '🐼',
+    avatarBg: 'bg-gradient-soft-mint',
+    floatDelay: 0.6,
+    mascotSrc: '/bunny.png',
+    mascotClass: 'w-18 h-18 -bottom-10 -left-6',
   },
 ];
 
 const container = {
   hidden: {},
-  show: { transition: { staggerChildren: 0.15 } },
+  show: { transition: { staggerChildren: 0.1 } },
 };
+
 const item = {
-  hidden: { opacity: 0, y: 30 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.35 } },
+  hidden: { opacity: 0, scale: 0.95, y: 20 },
+  show: {
+    opacity: 1,
+    scale: 1,
+    y: 0,
+    transition: { type: 'spring', stiffness: 100, damping: 15 },
+  },
 };
 
 export default function CustomerLove() {
   return (
-    <SectionCard id="love">
-      <div className="text-center mb-12">
-        <p className="font-script text-2xl text-mustard mb-1">customer love</p>
-        <h2 className="font-script text-4xl md:text-6xl text-berry font-bold">
-          Love From You Guys
-        </h2>
+    <section id="reviews" className="relative w-full py-28 bg-gradient-to-b from-[#FAF5FF] to-[#FFF0F6] px-6 md:px-12 lg:px-20 overflow-hidden">
+      
+      {/* Sparkles decoration */}
+      <div className="absolute inset-0 pointer-events-none select-none z-10 opacity-30">
+        <Sparkles className="absolute text-candy w-5 h-5 top-12 left-1/4 animate-pulse" />
+        <Sparkles className="absolute text-sky w-5 h-5 bottom-12 right-1/4 animate-pulse delay-300" />
       </div>
 
-      <motion.div
-        variants={container}
-        initial="hidden"
-        whileInView="show"
-        viewport={{ once: true, amount: 0.15 }}
-        className="grid grid-cols-1 md:grid-cols-3 gap-6"
-      >
-        {testimonials.map((t, i) => (
-          <motion.div
-            key={i}
-            variants={item}
-            className="bg-cream rounded-3xl p-7 shadow-md relative border border-charcoal/5"
-          >
-            <Quote
-              size={36}
-              className="text-rose/20 absolute top-4 right-4"
-            />
-            <div className="flex gap-1 mb-4">
-              {[...Array(5)].map((_, j) => (
-                <Star
-                  key={j}
-                  size={18}
-                  className="text-mustard fill-mustard"
-                />
-              ))}
-            </div>
-            <p className="text-charcoal leading-relaxed mb-5 text-sm md:text-base font-medium">
-              "{t.quote}"
-            </p>
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-rose/20 flex items-center justify-center font-script text-xl text-berry">
-                {t.author[0]}
-              </div>
-              <div>
-                <p className="font-semibold text-sm text-berry">{t.author}</p>
-                <p className="text-xs text-charcoal/60">{t.location}</p>
-              </div>
-            </div>
-          </motion.div>
-        ))}
-      </motion.div>
-    </SectionCard>
+      <div className="max-w-[1500px] mx-auto relative z-20">
+        {/* Header */}
+        <div className="text-center mb-20">
+          <span className="text-xs font-bold uppercase tracking-[0.2em] text-primary bg-primary/5 px-4 py-1.5 rounded-full mb-3 inline-block">
+            Customer Stories
+          </span>
+          <h2 className="font-heading text-4xl md:text-5xl text-darkText font-extrabold mb-4 leading-tight select-none">
+            Collector Reviews.
+          </h2>
+          <p className="font-body text-base text-darkText/70 max-w-xl mx-auto">
+            See what our magical universe friends say about their adopted buddies. Mascots are peeking to read!
+          </p>
+        </div>
+
+        {/* Grid List */}
+        <motion.div
+          variants={container}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, amount: 0.1 }}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10"
+        >
+          {reviews.map((r, i) => (
+            <motion.div
+              key={i}
+              variants={item}
+              className="relative pt-6 pb-6"
+            >
+              {/* Mascot Peeking from Behind the Card */}
+              <motion.img
+                src={r.mascotSrc}
+                alt="Peeking mascot"
+                animate={{
+                  y: [0, -6, 0],
+                  rotate: [-3, 3, -3],
+                }}
+                transition={{
+                  duration: 4,
+                  repeat: Infinity,
+                  ease: 'easeInOut',
+                  delay: r.floatDelay,
+                }}
+                className={`absolute ${r.mascotClass} z-20 pointer-events-none object-contain filter drop-shadow-md`}
+              />
+
+              {/* Speech Bubble */}
+              <motion.div
+                animate={{
+                  y: [-6, 6, -6],
+                }}
+                transition={{
+                  duration: 5,
+                  repeat: Infinity,
+                  ease: 'easeInOut',
+                  delay: r.floatDelay,
+                }}
+                className="bg-white rounded-[32px] p-8 shadow-[0_6px_25px_rgba(0,0,0,0.02)] border border-darkText/5 relative flex flex-col justify-between h-full group hover:shadow-[0_20px_45px_rgba(124,58,237,0.1)] hover:-translate-y-1.5 transition-all duration-300"
+              >
+                {/* 5-Star Ratings Scale Animation */}
+                <div className="flex gap-0.5 mb-5 text-sunny">
+                  {[...Array(5)].map((_, j) => (
+                    <motion.div
+                      key={j}
+                      initial={{ scale: 0.7 }}
+                      animate={{ scale: 1 }}
+                      transition={{ delay: 0.2 + j * 0.05 }}
+                    >
+                      <Star
+                        size={16}
+                        className="fill-sunny text-sunny"
+                      />
+                    </motion.div>
+                  ))}
+                </div>
+
+                {/* Review text */}
+                <p className="font-body text-sm text-darkText/80 leading-relaxed font-medium mb-6 italic relative z-10">
+                  "{r.quote}"
+                </p>
+
+                {/* Author & Avatar */}
+                <div className="flex items-center gap-3 border-t border-darkText/[0.04] pt-4 mt-auto relative z-10">
+                  <div className={`w-10 h-10 rounded-full flex items-center justify-center text-xl shadow-sm ${r.avatarBg}`}>
+                    {r.avatar}
+                  </div>
+                  <div>
+                    <h4 className="font-heading font-bold text-xs text-darkText leading-none group-hover:text-primary transition-colors">
+                      {r.author}
+                    </h4>
+                    <span className="text-[9px] text-darkText/40 font-bold block mt-1">
+                      {r.location}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Speech Bubble Pointer */}
+                <div className="absolute bottom-[-6px] left-10 w-4 h-4 bg-white border-r border-b border-darkText/5 rotate-45 z-10" />
+              </motion.div>
+            </motion.div>
+          ))}
+        </motion.div>
+      </div>
+    </section>
   );
 }

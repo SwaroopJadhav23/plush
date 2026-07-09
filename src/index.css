@@ -3,12 +3,13 @@
 @tailwind utilities;
 
 :root {
-  --color-blush: #f7d9e3;
-  --color-rose: #e8829e;
-  --color-berry: #8e2a46;
-  --color-mustard: #e0a93a;
-  --color-cream: #fff8f3;
-  --color-charcoal: #2e2420;
+  --color-primary: #7C3AED;
+  --color-candy: #FF6FB5;
+  --color-sky: #66D9FF;
+  --color-sunny: #FFD54F;
+  --color-mint: #78E6C8;
+  --color-bgMain: #F8FAFF;
+  --color-darkText: #2D2D2D;
 }
 
 @layer base {
@@ -17,115 +18,133 @@
   }
 
   body {
-    font-family: 'Poppins', sans-serif;
-    color: #2e2420;
-    background-color: #f7d9e3;
+    font-family: "Plus Jakarta Sans", sans-serif;
+    color: #2D2D2D;
+    background-color: #F8FAFF;
     overflow-x: hidden;
   }
 
-  /* Subtle linen fabric texture overlay */
-  .fabric-bg {
-    background-color: #f7d9e3;
-    background-image: 
-      linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px),
-      linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
-    background-size: 18px 18px;
-    background-repeat: repeat;
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Fredoka', sans-serif;
   }
 }
 
 @layer utilities {
-  .font-script {
-    font-family: 'Caveat', cursive;
+  .text-shadow-glow {
+    text-shadow: 0 0 12px rgba(255, 111, 181, 0.4), 0 0 24px rgba(124, 58, 237, 0.2);
   }
 
-  /* Masonry columns */
-  .masonry {
-    column-count: 2;
-    column-gap: 1rem;
-  }
-  @media (min-width: 768px) {
-    .masonry {
-      column-count: 3;
-    }
-  }
-  @media (min-width: 1024px) {
-    .masonry {
-      column-count: 4;
-    }
-  }
-  .masonry > * {
-    break-inside: avoid;
-    margin-bottom: 1rem;
+  .text-shadow-soft {
+    text-shadow: 0 2px 4px rgba(45, 45, 45, 0.08);
   }
 
-  /* Loose thread draw-on animation for creation cards */
-  .thread-line {
-    stroke-dasharray: 200;
-    stroke-dashoffset: 200;
-    transition: stroke-dashoffset 0.5s ease-out;
-  }
-  .group:hover .thread-line {
-    stroke-dashoffset: 0;
-  }
-
-  /* Custom scrollbar */
+  /* Custom cute scrollbar */
   ::-webkit-scrollbar {
-    width: 8px;
+    width: 10px;
+    height: 10px;
   }
   ::-webkit-scrollbar-track {
-    background: #f7d9e3;
+    background: #F8FAFF;
   }
   ::-webkit-scrollbar-thumb {
-    background: #e8829e;
-    border-radius: 4px;
+    background: linear-gradient(180deg, #FF6FB5 0%, #7C3AED 100%);
+    border-radius: 9999px;
+    border: 2px solid #F8FAFF;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: #8e2a46;
+    background: linear-gradient(180deg, #FF5FA7 0%, #6D28D9 100%);
   }
 
-  /* Pinterest-style Order Pill animations */
+  /* Soft gradient backdrops */
+  .bg-gradient-soft-pink {
+    background: linear-gradient(135deg, #FFF5F8 0%, #FFE6EF 100%);
+  }
+  .bg-gradient-soft-blue {
+    background: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%);
+  }
+  .bg-gradient-soft-yellow {
+    background: linear-gradient(135deg, #FEFCE8 0%, #FEF9C3 100%);
+  }
+  .bg-gradient-soft-mint {
+    background: linear-gradient(135deg, #F0FDF4 0%, #DCFCE7 100%);
+  }
+  .bg-gradient-soft-purple {
+    background: linear-gradient(135deg, #FAF5FF 0%, #F3E8FF 100%);
+  }
+  .bg-gradient-soft-primary {
+    background: linear-gradient(135deg, #F5F3FF 0%, #EDE9FE 100%);
+  }
+
+  /* Glassmorphism card utility */
+  .glass-card {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+  }
+
+  /* Elegant order pill styling */
   .order-pill {
-    height: 34px;
+    height: 38px;
     padding-left: 14px;
     padding-right: 14px;
-    background-color: #e8829e; /* Brand pink */
+    background: linear-gradient(90deg, #FF6FB5 0%, #7C3AED 100%);
     border-radius: 9999px;
     display: flex;
     align-items: center;
     gap: 6px;
-    box-shadow: 0 4px 6px -1px rgba(142, 42, 70, 0.15), 0 2px 4px -1px rgba(142, 42, 70, 0.1);
-    transition: transform 250ms cubic-bezier(0.215, 0.61, 0.355, 1), 
-                box-shadow 250ms cubic-bezier(0.215, 0.61, 0.355, 1),
-                background-color 250ms cubic-bezier(0.215, 0.61, 0.355, 1);
+    box-shadow: 0 4px 15px rgba(255, 111, 181, 0.25);
+    transition: all 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
   }
 
   .order-pill-text {
-    max-width: 36px;
+    max-width: 44px;
     overflow: hidden;
     display: flex;
     align-items: center;
-    transition: max-width 250ms cubic-bezier(0.215, 0.61, 0.355, 1);
+    transition: max-width 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
   }
 
   .order-pill-extra {
     opacity: 0;
-    transition: opacity 250ms cubic-bezier(0.215, 0.61, 0.355, 1);
+    transition: opacity 250ms ease;
     padding-left: 4px;
     white-space: nowrap;
   }
 
   @media (hover: hover) and (pointer: fine) {
     .group:hover .order-pill {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 16px -2px rgba(142, 42, 70, 0.25);
-      background-color: #8e2a46; /* Brand berry */
+      transform: scale(1.05);
+      box-shadow: 0 8px 25px rgba(255, 111, 181, 0.4);
+      background: linear-gradient(90deg, #7C3AED 0%, #FF6FB5 100%);
     }
     .group:hover .order-pill-text {
-      max-width: 140px;
+      max-width: 150px;
     }
     .group:hover .order-pill-extra {
       opacity: 1;
     }
+  }
+
+  /* Custom Cursor Sparkle particle styling */
+  .sparkle-particle {
+    position: fixed;
+    pointer-events: none;
+    z-index: 99999;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    background: linear-gradient(135deg, #FFD54F 0%, #FF6FB5 100%);
+    mix-blend-mode: screen;
+    animation: fadeScale 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+}
+
+@keyframes fadeScale {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1) rotate(0deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0) rotate(45deg);
   }
 }
