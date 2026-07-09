@@ -1,0 +1,74 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: 'Poppins', sans-serif;
+    color: #2e2420;
+    background-color: #f7d9e3;
+    overflow-x: hidden;
+  }
+
+  /* Hide default cursor on desktop (custom cursor takes over) */
+  @media (hover: hover) and (pointer: fine) {
+    * {
+      cursor: none !important;
+    }
+  }
+}
+
+@layer utilities {
+  .font-script {
+    font-family: 'Caveat', cursive;
+  }
+
+  /* Masonry columns */
+  .masonry {
+    column-count: 2;
+    column-gap: 1rem;
+  }
+  @media (min-width: 768px) {
+    .masonry {
+      column-count: 3;
+    }
+  }
+  @media (min-width: 1024px) {
+    .masonry {
+      column-count: 4;
+    }
+  }
+  .masonry > * {
+    break-inside: avoid;
+    margin-bottom: 1rem;
+  }
+
+  /* Loose thread draw-on animation for creation cards */
+  .thread-line {
+    stroke-dasharray: 200;
+    stroke-dashoffset: 200;
+    transition: stroke-dashoffset 0.5s ease-out;
+  }
+  .group:hover .thread-line {
+    stroke-dashoffset: 0;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #f7d9e3;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #e8829e;
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #8e2a46;
+  }
+}
