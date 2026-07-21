@@ -99,7 +99,7 @@ export default function Contact() {
               >
                 <div className="w-9 h-9 rounded-xl bg-bgMain flex items-center justify-center">
                   {'isWhatsApp' in c && c.isWhatsApp ? (
-                    <img src="/whatsapp.png" alt="WhatsApp" className="w-5.5 h-5.5 object-contain" />
+                    <img src="/whatsapp.png" alt="WhatsApp" className="w-5 h-5 object-contain" />
                   ) : (
                     <Icon size={18} />
                   )}
