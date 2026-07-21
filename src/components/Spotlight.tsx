@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
-import { ChevronLeft, ChevronRight, MessageCircle, Star, Sparkles } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Star, Sparkles } from 'lucide-react';
 import { API_BASE_URL, WHATSAPP_NUMBER } from '../config/api';
 
 interface Slide {
@@ -298,9 +298,11 @@ export default function Spotlight() {
                     onClick={handleOrder}
                     whileHover={{ scale: 1.03, y: -2 }}
                     whileTap={{ scale: 0.97 }}
-                    className="bg-gradient-to-r from-candy to-primary text-white font-heading font-bold px-8 py-4 rounded-full flex items-center justify-center gap-2 shadow-[0_5px_15px_rgba(255,111,181,0.25)] text-sm cursor-pointer"
+                    className="bg-gradient-to-r from-[#25D366] via-[#20BD5A] to-[#128C7E] text-white font-heading font-extrabold px-8 py-4 rounded-full flex items-center justify-center gap-2.5 shadow-[0_6px_25px_rgba(37,211,102,0.35)] hover:shadow-[0_10px_30px_rgba(37,211,102,0.5)] transition-all text-sm sm:text-base cursor-pointer group"
                   >
-                    <MessageCircle size={18} className="fill-white text-white" />
+                    <svg className="w-5 h-5 fill-current text-white shrink-0 group-hover:scale-110 transition-transform duration-300" viewBox="0 0 24 24">
+                      <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.105 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-1.15 4.2 4.293-1.133zm4.792-3.691c-.272-.136-1.61-.795-1.86-.886-.25-.091-.432-.136-.613.136-.182.272-.704.886-.863 1.068-.159.182-.318.205-.59.068-.272-.136-1.15-.424-2.19-1.352-.81-.723-1.357-1.616-1.516-1.888-.159-.272-.017-.419.119-.554.123-.122.272-.318.409-.477.136-.159.182-.272.272-.454.091-.182.045-.341-.023-.477-.068-.136-.613-1.477-.84-2.023-.222-.533-.448-.461-.613-.469-.158-.008-.34-.008-.522-.008s-.477.068-.727.341c-.25.272-.954.932-.954 2.273s.977 2.636 1.114 2.818c.136.182 1.923 2.937 4.659 4.12 2.736 1.183 2.736.789 3.236.739.5-.05 1.61-.659 1.837-1.295.227-.636.227-1.182.159-1.295-.068-.113-.25-.182-.522-.318z"/>
+                    </svg>
                     <span>Adopt via WhatsApp — {current.price}</span>
                   </motion.button>
 
