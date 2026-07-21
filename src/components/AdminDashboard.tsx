@@ -935,9 +935,9 @@ export default function AdminDashboard() {
                           {[
                             { key: 'char_loopy', label: 'Loopy', style: 'top-[12%] left-[6%]', fallbackImg: '/loopy.png' },
                             { key: 'char_lotso', label: 'Lotso', style: 'bottom-[12%] left-[8%]', fallbackImg: '/lotso.png' },
-                            { key: 'char_snorlax', label: 'Snorlax', style: 'top-[10%] right-[8%]', fallbackImg: '/snorlax.png' },
-                            { key: 'char_bunny', label: 'Bunny', style: 'bottom-[12%] right-[8%]', fallbackImg: '/bunny.png' },
-                            { key: 'char_purple', label: 'Purple Pillow', style: 'top-[42%] right-[2%]', fallbackImg: '/purple_long.png' },
+                            { key: 'char_snorlax', label: 'Snorlax', style: 'top-[8%] right-[8%]', fallbackImg: '/snorlax.png' },
+                            { key: 'char_bunny', label: 'Bunny', style: 'bottom-[8%] right-[8%]', fallbackImg: '/bunny.png' },
+                            { key: 'char_purple', label: 'Purple Pillow', style: 'top-[38%] right-[20%]', fallbackImg: '/purple_long.png' },
                           ].map((char) => {
                             const savedAsset = sections.find(s => s.sectionName === 'hero' && s.key === char.key);
                             const isHovered = hoveredAssetKey === char.key;

@@ -31,7 +31,7 @@ const floatingCharacters = [
   {
     name: 'Snorlax',
     src: '/snorlax.png',
-    position: 'top-[10%] right-[4%] md:top-[16%] md:right-[6%]',
+    position: 'top-[8%] right-[4%] md:top-[12%] md:right-[6%]',
     size: 'w-26 h-26 sm:w-32 sm:h-32 md:w-48 md:h-48',
     floatDuration: 7,
     tiltDuration: 9,
@@ -41,7 +41,7 @@ const floatingCharacters = [
   {
     name: 'Bunny',
     src: '/bunny.png',
-    position: 'bottom-[12%] right-[3%] md:bottom-[18%] md:right-[8%]',
+    position: 'bottom-[8%] right-[3%] md:bottom-[10%] md:right-[6%]',
     size: 'w-24 h-24 sm:w-28 sm:h-28 md:w-40 md:h-40',
     floatDuration: 5.5,
     tiltDuration: 7.5,
@@ -51,7 +51,7 @@ const floatingCharacters = [
   {
     name: 'Purple Plush',
     src: '/purple_long.png',
-    position: 'top-[42%] right-[2%] md:top-[45%] md:right-[3%] lg:right-[4%]',
+    position: 'top-[38%] right-[12%] md:top-[40%] md:right-[16%] lg:right-[20%]',
     size: 'w-20 h-20 sm:w-24 sm:h-24 md:w-36 md:h-36',
     floatDuration: 6.5,
     tiltDuration: 8.5,
