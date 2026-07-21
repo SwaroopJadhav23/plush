@@ -489,12 +489,12 @@ export default function AdminDashboard() {
           {/* Right Action buttons */}
           <div className="flex items-center gap-2">
             {/* Desktop Only: Exit Admin View Button */}
-            <a
-              href="#/"
-              className="hidden md:inline-block text-[10px] md:text-xs font-body font-bold border border-darkText/10 text-darkText/70 hover:text-primary hover:border-primary px-3 py-1.5 md:px-4 md:py-2 rounded-full transition-all shrink-0"
+            <button
+              onClick={() => { window.location.href = '/'; }}
+              className="hidden md:inline-block text-[10px] md:text-xs font-body font-bold border border-darkText/10 text-darkText/70 hover:text-primary hover:border-primary px-3 py-1.5 md:px-4 md:py-2 rounded-full transition-all shrink-0 cursor-pointer bg-white"
             >
               Exit Admin
-            </a>
+            </button>
 
             {/* Mobile Hamburger toggle button */}
             <button
@@ -548,13 +548,12 @@ export default function AdminDashboard() {
             
             <div className="border-t border-darkText/5 my-1.5" />
             
-            <a 
-              href="#/"
-              onClick={() => setIsMenuOpen(false)}
-              className="flex items-center gap-2 px-4 py-3 rounded-xl text-candy hover:bg-candy/5 text-left border border-candy/10 bg-candy/5"
+            <button 
+              onClick={() => { setIsMenuOpen(false); window.location.href = '/'; }}
+              className="flex items-center gap-2 px-4 py-3 rounded-xl text-candy hover:bg-candy/5 text-left border border-candy/10 bg-candy/5 cursor-pointer w-full font-bold"
             >
               <span>Exit Admin Gate</span>
-            </a>
+            </button>
           </div>
         )}
       </nav>
