@@ -151,17 +151,22 @@ export default function Spotlight() {
 
   // Prefilled WhatsApp order
   const handleOrder = () => {
+    const fullImageUrl = current.src.startsWith('http') 
+      ? current.src 
+      : `${window.location.origin}${current.src.startsWith('/') ? '' : '/'}${current.src}`;
+
     const lines = [
-      'Hello Plush.Palz! 👋',
+      'Hello Plush.Palz!',
       '',
-      'I want to order this featured spotlight plush!',
+      'I want to order this featured spotlight plush from your website:',
       '',
-      `🌸 Product: *${current.name}*`,
-      `💰 Price: *${current.price}*`,
+      `Product Name: *${current.name}*`,
+      `Price: *${current.price}*`,
+      `Product Image: ${fullImageUrl}`,
       '',
       'Please confirm availability!',
       '',
-      'Thank you! ✨'
+      'Thank you!'
     ];
     const message = lines.join('\n');
     const encoded = encodeURIComponent(message);

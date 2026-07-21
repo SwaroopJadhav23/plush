@@ -116,27 +116,32 @@ export default function ProductDetails({ slug }: ProductDetailsProps) {
 
   // Prefilled WhatsApp order trigger
   const handleOrder = () => {
+    const fullImageUrl = p.src.startsWith('http') 
+      ? p.src 
+      : `${window.location.origin}${p.src.startsWith('/') ? '' : '/'}${p.src}`;
+
     const lines = [
-      'Hello Plush.Palz! 👋',
+      'Hello Plush.Palz!',
       '',
-      "I'm looking to order this beautiful plush from your website!",
+      "I'm looking to order this plush from your website:",
       '',
-      `🌸 Product Name: *${p.name}*`,
-      `🌌 Collection: *${p.universe}*`,
+      `Product Name: *${p.name}*`,
+      `Collection: *${p.universe}*`,
     ];
 
     if (appliedCoupon) {
-      lines.push(`💰 Original Price: *₹${originalPriceNum.toLocaleString('en-IN')}*`);
-      lines.push(`🎟️ Coupon Applied: *${appliedCoupon.code}* (-₹${appliedCoupon.discountAmount.toLocaleString('en-IN')})`);
-      lines.push(`💸 Final Price: *₹${discountedPrice.toLocaleString('en-IN')}*`);
+      lines.push(`Original Price: *₹${originalPriceNum.toLocaleString('en-IN')}*`);
+      lines.push(`Coupon Applied: *${appliedCoupon.code}* (-₹${appliedCoupon.discountAmount.toLocaleString('en-IN')})`);
+      lines.push(`Final Price: *₹${discountedPrice.toLocaleString('en-IN')}*`);
     } else {
-      lines.push(`💰 Price: *₹${originalPriceNum.toLocaleString('en-IN')}*`);
+      lines.push(`Price: *₹${originalPriceNum.toLocaleString('en-IN')}*`);
     }
 
+    lines.push(`Product Image: ${fullImageUrl}`);
     lines.push('');
-    lines.push("Please let me know if it's available.");
+    lines.push("Please let me know if it is available.");
     lines.push('');
-    lines.push('Thank you! ✨');
+    lines.push('Thank you!');
 
     const message = lines.join('\n');
     const encoded = encodeURIComponent(message);
