@@ -61,7 +61,7 @@ const item: any = {
 
 export default function CustomerLove() {
   return (
-    <section id="reviews" className="relative w-full py-12 md:py-20 lg:py-28 bg-gradient-to-b from-[#FAF5FF] to-[#FFF0F6] px-4 sm:px-8 md:px-12 lg:px-20 overflow-hidden scroll-mt-24">
+    <section id="reviews" className="relative w-full pt-28 sm:pt-32 md:pt-36 pb-16 md:pb-24 lg:pb-28 bg-gradient-to-b from-[#FAF5FF] to-[#FFF0F6] px-4 sm:px-8 md:px-12 lg:px-20 overflow-hidden scroll-mt-28">
       
       {/* Sparkles decoration */}
       <div className="absolute inset-0 pointer-events-none select-none z-10 opacity-30">

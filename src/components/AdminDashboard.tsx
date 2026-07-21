@@ -68,6 +68,8 @@ export default function AdminDashboard() {
   const [coupons, setCoupons] = useState<any[]>([]);
   const [sections, setSections] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [actionLoading, setActionLoading] = useState(false);
+  const [actionLoadingMessage, setActionLoadingMessage] = useState('');
 
   // Modals & form states
   const [isProductModalOpen, setIsProductModalOpen] = useState(false);
@@ -154,6 +156,8 @@ export default function AdminDashboard() {
     e.preventDefault();
     setSecuritySuccessMessage('');
     setSecurityErrorMessage('');
+    setActionLoadingMessage('Updating secure credentials...');
+    setActionLoading(true);
     try {
       const payload = updateType === 'pin'
         ? { pin: newPin }
@@ -173,6 +177,8 @@ export default function AdminDashboard() {
       }
     } catch (err: any) {
       setSecurityErrorMessage(err.message || 'Failed to update credentials.');
+    } finally {
+      setActionLoading(false);
     }
   };
 
@@ -181,6 +187,8 @@ export default function AdminDashboard() {
     const file = e.target.files?.[0];
     if (!file) return;
 
+    setActionLoadingMessage('Uploading image and updating section asset...');
+    setActionLoading(true);
     try {
       const formData = new FormData();
       formData.append('sectionName', sectionName);
@@ -193,24 +201,32 @@ export default function AdminDashboard() {
       loadData();
     } catch (err: any) {
       alert(`Error updating section image: ${err.message}`);
+    } finally {
+      setActionLoading(false);
     }
   };
 
   // Section Image reset helper
   const handleSectionImageReset = async (sectionName: string, key: string) => {
     if (!window.confirm('Are you sure you want to reset this slot to the default fallback image?')) return;
+    setActionLoadingMessage('Resetting section image to default fallback...');
+    setActionLoading(true);
     try {
       await deleteSection(sectionName, key);
       alert('Section image reset to default successfully!');
       loadData();
     } catch (err: any) {
       alert(`Error resetting section image: ${err.message}`);
+    } finally {
+      setActionLoading(false);
     }
   };
 
   // Product submission
   const handleProductSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setActionLoadingMessage(editingProduct ? 'Saving changes to product...' : 'Uploading image and publishing new product plush...');
+    setActionLoading(true);
     try {
       const formData = new FormData();
       formData.append('name', productForm.name);
@@ -254,17 +270,23 @@ export default function AdminDashboard() {
       loadData();
     } catch (err: any) {
       alert(`Error saving product: ${err.message}`);
+    } finally {
+      setActionLoading(false);
     }
   };
 
   // Delete product
   const handleDeleteProduct = async (id: number) => {
     if (!window.confirm('Are you sure you want to delete this product?')) return;
+    setActionLoadingMessage('Deleting product from catalog...');
+    setActionLoading(true);
     try {
       await deleteProduct(id);
       loadData();
     } catch (err: any) {
       alert(`Error deleting product: ${err.message}`);
+    } finally {
+      setActionLoading(false);
     }
   };
 
@@ -288,6 +310,8 @@ export default function AdminDashboard() {
   // Coupon submission
   const handleCouponSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setActionLoadingMessage('Saving discount coupon code...');
+    setActionLoading(true);
     try {
       const coupon: CouponData = {
         code: couponForm.code.toUpperCase(),
@@ -310,22 +334,30 @@ export default function AdminDashboard() {
       loadData();
     } catch (err: any) {
       alert(`Error saving coupon: ${err.message}`);
+    } finally {
+      setActionLoading(false);
     }
   };
 
   // Delete coupon
   const handleDeleteCoupon = async (id: string) => {
     if (!window.confirm('Are you sure you want to delete this coupon?')) return;
+    setActionLoadingMessage('Deleting coupon...');
+    setActionLoading(true);
     try {
       await deleteCoupon(id);
       loadData();
     } catch (err: any) {
       alert(`Error deleting coupon: ${err.message}`);
+    } finally {
+      setActionLoading(false);
     }
   };
 
   // Toggle coupon status
   const handleToggleCoupon = async (coupon: any) => {
+    setActionLoadingMessage('Updating coupon status...');
+    setActionLoading(true);
     try {
       await saveCoupon({
         ...coupon,
@@ -334,6 +366,8 @@ export default function AdminDashboard() {
       loadData();
     } catch (err: any) {
       alert(`Error toggling coupon: ${err.message}`);
+    } finally {
+      setActionLoading(false);
     }
   };
 
@@ -711,74 +745,140 @@ export default function AdminDashboard() {
                     <p className="text-xs text-darkText/30">Click "Add New Plush" to get started!</p>
                   </div>
                 ) : (
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-left border-collapse">
-                      <thead>
-                        <tr className="border-b border-darkText/10 text-xs font-bold uppercase tracking-wider text-darkText/50">
-                          <th className="py-4.5 px-4">Image</th>
-                          <th className="py-4.5 px-4">Product Name</th>
-                          <th className="py-4.5 px-4">Universe</th>
-                          <th className="py-4.5 px-4">Pricing</th>
-                          <th className="py-4.5 px-4">Offer Status</th>
-                          <th className="py-4.5 px-4">Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-darkText/5 text-sm font-body font-semibold">
-                        {products.map((p) => (
-                          <tr key={p.id}>
-                            <td className="py-4 px-4">
-                              <img 
-                                src={getImgUrl(p.src)} 
-                                alt={p.name} 
-                                className="w-12 h-12 object-contain bg-gradient-to-tr from-sky/5 to-candy/5 rounded-xl border border-darkText/5"
-                              />
-                            </td>
-                            <td className="py-4 px-4">
-                              <span className="font-body font-bold text-darkText block">{p.name}</span>
-                              <span className="text-xs text-darkText/40">slug: {p.slug}</span>
-                            </td>
-                            <td className="py-4 px-4">
-                              <span className="text-xs bg-primary/10 text-primary border border-primary/20 px-2.5 py-1 rounded-full">
+                  <div>
+                    {/* Mobile View: Stacked Vertical Cards */}
+                    <div className="flex flex-col gap-4 lg:hidden">
+                      {products.map((p) => (
+                        <div key={p.id} className="bg-white/40 border border-darkText/5 p-4 rounded-2xl flex flex-col gap-4 relative font-body text-xs font-semibold">
+                          {/* Top Row: Image & Name */}
+                          <div className="flex gap-4 items-center">
+                            <img 
+                              src={getImgUrl(p.src)} 
+                              alt={p.name} 
+                              className="w-14 h-14 object-contain bg-gradient-to-tr from-sky/5 to-candy/5 rounded-xl border border-darkText/5 shrink-0"
+                            />
+                            <div className="min-w-0 flex-1">
+                              <span className="font-body font-bold text-darkText text-sm block truncate">{p.name}</span>
+                              <span className="text-[10px] text-darkText/40 block mt-0.5 font-semibold">slug: {p.slug}</span>
+                              <span className="text-[10px] bg-primary/10 text-primary border border-primary/20 px-2.5 py-0.5 rounded-full inline-block mt-2 font-bold uppercase tracking-wider">
                                 {p.universe}
                               </span>
-                            </td>
-                            <td className="py-4 px-4">
-                              <span className="text-darkText">₹{p.price}</span>
+                            </div>
+                          </div>
+
+                          {/* Middle Row: Pricing & Offer status */}
+                          <div className="flex justify-between items-center border-t border-darkText/5 pt-3">
+                            <div>
+                              <span className="text-darkText/40 block text-[9px] uppercase font-bold tracking-wider mb-0.5">Pricing</span>
+                              <span className="text-darkText font-bold text-sm block">₹{p.price}</span>
                               {p.originalPrice && (
-                                <span className="text-xs text-darkText/30 line-through block">₹{p.originalPrice}</span>
+                                <span className="text-[10px] text-darkText/30 line-through block">₹{p.originalPrice}</span>
                               )}
-                            </td>
-                            <td className="py-4 px-4">
+                            </div>
+                            <div className="text-right">
+                              <span className="text-darkText/40 block text-[9px] uppercase font-bold tracking-wider mb-1.5">Offer Status</span>
                               {p.isSpecialOffer ? (
-                                <span className="text-xs bg-candy/10 text-candy border border-candy/20 px-2.5 py-1 rounded-full">
+                                <span className="text-[10px] bg-candy/10 text-candy border border-candy/20 px-2.5 py-1 rounded-full font-bold">
                                   % {p.discountPercentage ? `${p.discountPercentage}% Off` : 'Special Offer'}
                                 </span>
                               ) : (
                                 <span className="text-xs text-darkText/40">-</span>
                               )}
-                            </td>
-                            <td className="py-4 px-4">
-                              <div className="flex gap-2">
-                                <button 
-                                  onClick={() => handleEditProduct(p)}
-                                  className="w-8 h-8 rounded-full border border-darkText/10 flex items-center justify-center text-darkText/70 hover:text-primary hover:border-primary transition-colors cursor-pointer"
-                                  title="Edit"
-                                >
-                                  <Edit3 size={14} />
-                                </button>
-                                <button 
-                                  onClick={() => handleDeleteProduct(p.id)}
-                                  className="w-8 h-8 rounded-full border border-darkText/10 flex items-center justify-center text-darkText/70 hover:text-candy hover:border-candy transition-colors cursor-pointer"
-                                  title="Delete"
-                                >
-                                  <Trash2 size={14} />
-                                </button>
-                              </div>
-                            </td>
+                            </div>
+                          </div>
+
+                          {/* Bottom Row: Actions */}
+                          <div className="flex gap-2 justify-end border-t border-darkText/5 pt-3">
+                            <button 
+                              onClick={() => handleEditProduct(p)}
+                              className="flex-1 bg-white border border-darkText/10 hover:border-primary/50 text-darkText/70 hover:text-primary font-bold text-xs py-2 px-3 rounded-xl flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-sm"
+                              title="Edit"
+                            >
+                              <Edit3 size={12} />
+                              <span>Edit Product</span>
+                            </button>
+                            <button 
+                              onClick={() => handleDeleteProduct(p.id)}
+                              className="w-9 h-9 rounded-xl border border-darkText/10 flex items-center justify-center text-darkText/50 hover:text-candy hover:border-candy hover:bg-candy/5 transition-all cursor-pointer bg-white"
+                              title="Delete"
+                            >
+                              <Trash2 size={12} />
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Desktop View: Full Grid Table */}
+                    <div className="hidden lg:block overflow-x-auto">
+                      <table className="w-full text-left border-collapse">
+                        <thead>
+                          <tr className="border-b border-darkText/10 text-xs font-bold uppercase tracking-wider text-darkText/50">
+                            <th className="py-4.5 px-4">Image</th>
+                            <th className="py-4.5 px-4">Product Name</th>
+                            <th className="py-4.5 px-4">Universe</th>
+                            <th className="py-4.5 px-4">Pricing</th>
+                            <th className="py-4.5 px-4">Offer Status</th>
+                            <th className="py-4.5 px-4">Actions</th>
                           </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                        </thead>
+                        <tbody className="divide-y divide-darkText/5 text-sm font-body font-semibold">
+                          {products.map((p) => (
+                            <tr key={p.id}>
+                              <td className="py-4 px-4">
+                                <img 
+                                  src={getImgUrl(p.src)} 
+                                  alt={p.name} 
+                                  className="w-12 h-12 object-contain bg-gradient-to-tr from-sky/5 to-candy/5 rounded-xl border border-darkText/5"
+                                />
+                              </td>
+                              <td className="py-4 px-4">
+                                <span className="font-body font-bold text-darkText block">{p.name}</span>
+                                <span className="text-xs text-darkText/40">slug: {p.slug}</span>
+                              </td>
+                              <td className="py-4 px-4">
+                                <span className="text-xs bg-primary/10 text-primary border border-primary/20 px-2.5 py-1 rounded-full">
+                                  {p.universe}
+                                </span>
+                              </td>
+                              <td className="py-4 px-4">
+                                <span className="text-darkText">₹{p.price}</span>
+                                {p.originalPrice && (
+                                  <span className="text-xs text-darkText/30 line-through block">₹{p.originalPrice}</span>
+                                )}
+                              </td>
+                              <td className="py-4 px-4">
+                                {p.isSpecialOffer ? (
+                                  <span className="text-xs bg-candy/10 text-candy border border-candy/20 px-2.5 py-1 rounded-full">
+                                    % {p.discountPercentage ? `${p.discountPercentage}% Off` : 'Special Offer'}
+                                  </span>
+                                ) : (
+                                  <span className="text-xs text-darkText/40">-</span>
+                                )}
+                              </td>
+                              <td className="py-4 px-4">
+                                <div className="flex gap-2">
+                                  <button 
+                                    onClick={() => handleEditProduct(p)}
+                                    className="w-8 h-8 rounded-full border border-darkText/10 flex items-center justify-center text-darkText/70 hover:text-primary hover:border-primary transition-colors cursor-pointer"
+                                    title="Edit"
+                                  >
+                                    <Edit3 size={14} />
+                                  </button>
+                                  <button 
+                                    onClick={() => handleDeleteProduct(p.id)}
+                                    className="w-8 h-8 rounded-full border border-darkText/10 flex items-center justify-center text-darkText/70 hover:text-candy hover:border-candy transition-colors cursor-pointer"
+                                    title="Delete"
+                                  >
+                                    <Trash2 size={14} />
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
                 )}
               </div>
@@ -1501,6 +1601,29 @@ export default function AdminDashboard() {
                 {editingProduct ? 'Save Product Changes' : 'Publish Product to Store'}
               </button>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Global Action Loading Overlay */}
+      {actionLoading && (
+        <div className="fixed inset-0 bg-darkText/60 backdrop-blur-sm z-[99999] flex flex-col items-center justify-center p-6 text-center select-none animate-fadeIn">
+          <div className="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl flex flex-col items-center gap-5 border border-white/40">
+            {/* Spinning Loader */}
+            <div className="relative w-16 h-16 flex items-center justify-center">
+              <div className="absolute inset-0 border-4 border-primary/20 rounded-full" />
+              <div className="absolute inset-0 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+              <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary animate-pulse text-xs">
+                ☁️
+              </div>
+            </div>
+            <div>
+              <h3 className="font-heading font-extrabold text-darkText text-lg mb-1.5">Processing Request</h3>
+              <p className="font-body text-xs font-bold text-darkText/50 leading-relaxed uppercase tracking-wider animate-pulse">
+                {actionLoadingMessage}
+              </p>
+            </div>
+            <span className="text-[10px] text-darkText/30 font-body">Please do not refresh or close this tab.</span>
           </div>
         </div>
       )}

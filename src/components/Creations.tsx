@@ -143,7 +143,7 @@ export function UniversePortals({ selectedUniverse, onSelectUniverse }: Universe
   const [hoveredCard, setHoveredCard] = useState<string | null>(null);
 
   return (
-    <section id="universe" className="relative w-full py-12 md:py-20 lg:py-24 bg-gradient-to-b from-[#F0F4FF] to-[#FAF5FF] px-4 sm:px-8 md:px-12 lg:px-20 overflow-hidden scroll-mt-24">
+    <section id="universe" className="relative w-full pt-28 sm:pt-32 md:pt-36 pb-16 md:pb-24 bg-gradient-to-b from-[#F0F4FF] to-[#FAF5FF] px-4 sm:px-8 md:px-12 lg:px-20 overflow-hidden scroll-mt-28">
       
       {/* Drifting Clouds background */}
       <div className="absolute inset-0 pointer-events-none opacity-30 select-none overflow-hidden">

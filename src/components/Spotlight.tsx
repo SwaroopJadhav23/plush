@@ -198,7 +198,7 @@ export default function Spotlight() {
   };
 
   return (
-    <section id="spotlight" className="relative w-full py-12 md:py-20 lg:py-28 px-4 sm:px-8 md:px-12 lg:px-20 bg-white overflow-hidden border-b border-darkText/[0.02] scroll-mt-24">
+    <section id="spotlight" className="relative w-full pt-28 sm:pt-32 md:pt-36 pb-16 md:pb-24 lg:pb-28 px-4 sm:px-8 md:px-12 lg:px-20 bg-white overflow-hidden border-b border-darkText/[0.02] scroll-mt-28">
       
       {/* Decorative floating clouds at the margins */}
       <div className="absolute inset-0 pointer-events-none select-none z-10 opacity-30">
