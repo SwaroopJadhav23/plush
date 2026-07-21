@@ -12,6 +12,7 @@ const contactCards = [
   },
   {
     icon: MessageCircle,
+    isWhatsApp: true,
     label: 'WhatsApp Orders (Vibhooti Sharma)',
     value: WHATSAPP_DISPLAY_NUMBER,
     href: `https://wa.me/${WHATSAPP_NUMBER}`,
@@ -80,7 +81,11 @@ export default function Contact() {
                 className={`flex items-center gap-3 bg-white rounded-3xl px-6 py-4 border border-darkText/5 shadow-[0_4px_20px_rgba(0,0,0,0.01)] transition-all duration-300 min-w-[220px] justify-center ${c.color}`}
               >
                 <div className="w-9 h-9 rounded-xl bg-bgMain flex items-center justify-center">
-                  <Icon size={18} />
+                  {'isWhatsApp' in c && c.isWhatsApp ? (
+                    <img src="/whatsapp.png" alt="WhatsApp" className="w-5.5 h-5.5 object-contain" />
+                  ) : (
+                    <Icon size={18} />
+                  )}
                 </div>
                 <div className="text-left">
                   <p className="text-[10px] text-darkText/40 font-bold uppercase tracking-wider">{c.label}</p>
