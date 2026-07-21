@@ -116,15 +116,29 @@ export default function ProductDetails({ slug }: ProductDetailsProps) {
 
   // Prefilled WhatsApp order trigger
   const handleOrder = () => {
-    let message = `Hello Plush.Palz! 👋\n\nI'm looking to order this beautiful plush from your website!\n\n🌸 Product Name: *${p.name}*\n🌌 Collection: *${p.universe}*\n`;
-    
+    const lines = [
+      'Hello Plush.Palz! 👋',
+      '',
+      "I'm looking to order this beautiful plush from your website!",
+      '',
+      `🌸 Product Name: *${p.name}*`,
+      `🌌 Collection: *${p.universe}*`,
+    ];
+
     if (appliedCoupon) {
-      message += `💰 Original Price: *₹${originalPriceNum.toLocaleString('en-IN')}*\n🎟️ Coupon Applied: *${appliedCoupon.code}* (-₹${appliedCoupon.discountAmount.toLocaleString('en-IN')})\n💸 Final Price: *₹${discountedPrice.toLocaleString('en-IN')}*\n`;
+      lines.push(`💰 Original Price: *₹${originalPriceNum.toLocaleString('en-IN')}*`);
+      lines.push(`🎟️ Coupon Applied: *${appliedCoupon.code}* (-₹${appliedCoupon.discountAmount.toLocaleString('en-IN')})`);
+      lines.push(`💸 Final Price: *₹${discountedPrice.toLocaleString('en-IN')}*`);
     } else {
-      message += `💰 Price: *₹${originalPriceNum.toLocaleString('en-IN')}*\n`;
+      lines.push(`💰 Price: *₹${originalPriceNum.toLocaleString('en-IN')}*`);
     }
 
-    message += `\nPlease let me know if it's available.\n\nThank you! ✨`;
+    lines.push('');
+    lines.push("Please let me know if it's available.");
+    lines.push('');
+    lines.push('Thank you! ✨');
+
+    const message = lines.join('\n');
     const encoded = encodeURIComponent(message);
     const waUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encoded}`;
     window.open(waUrl, '_blank');

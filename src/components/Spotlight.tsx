@@ -151,7 +151,19 @@ export default function Spotlight() {
 
   // Prefilled WhatsApp order
   const handleOrder = () => {
-    const message = `Hello Plush.Palz! 👋\n\nI want to order this featured spotlight plush!\n\n🌸 Product: *${current.name}*\n💰 Price: *${current.price}*\n\nPlease confirm availability!\n\nThank you! ✨`;
+    const lines = [
+      'Hello Plush.Palz! 👋',
+      '',
+      'I want to order this featured spotlight plush!',
+      '',
+      `🌸 Product: *${current.name}*`,
+      `💰 Price: *${current.price}*`,
+      '',
+      'Please confirm availability!',
+      '',
+      'Thank you! ✨'
+    ];
+    const message = lines.join('\n');
     const encoded = encodeURIComponent(message);
     const waUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encoded}`;
     window.open(waUrl, '_blank');
