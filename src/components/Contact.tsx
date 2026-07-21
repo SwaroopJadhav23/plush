@@ -14,7 +14,7 @@ const contactCards = [
   {
     icon: MessageCircle,
     isWhatsApp: true,
-    label: 'WhatsApp Orders (Vibhooti Sharma)',
+    label: 'WhatsApp',
     value: WHATSAPP_DISPLAY_NUMBER,
     href: `https://wa.me/${WHATSAPP_NUMBER}`,
     color: 'hover:border-[#25D366]/30 hover:text-[#25D366]',
@@ -116,7 +116,7 @@ export default function Contact() {
 
       {/* Magical Night Sky Footer */}
       <footer className="relative bg-[#0A071E] text-white py-20 px-6 rounded-t-[48px] md:rounded-t-[64px] overflow-hidden z-20">
-        
+
         {/* Shooting Star Easter Egg */}
         <div className="absolute top-[15%] right-[-100px] w-[180px] h-[2px] bg-gradient-to-l from-white to-transparent shooting-star-element pointer-events-none z-10" />
 
@@ -167,7 +167,7 @@ export default function Contact() {
 
         {/* Footer Content */}
         <div className="max-w-6xl mx-auto relative z-20 flex flex-col items-center text-center">
-          
+
           {/* Sleeping Mascot: Snorlax 💤 */}
           <div className="relative mb-8 flex flex-col items-center">
             {/* Zzz floating animations */}
@@ -222,7 +222,7 @@ export default function Contact() {
               Plush<span className="text-candy">.Palz</span>
             </span>
           </div>
-          
+
           <p className="text-xs text-white/50 max-w-sm mb-6 leading-relaxed">
             Premium Imported Collectible Plushies.<br />
             Sanrio • Pokémon • Anime • Disney Store.
