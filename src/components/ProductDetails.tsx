@@ -1,17 +1,43 @@
-import { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Heart, Share2, MessageCircle, ChevronLeft, Star, Sparkles, HelpCircle, ChevronDown, Play, Instagram } from 'lucide-react';
 import { products, Product } from './Creations';
+import { API_BASE_URL, validateCoupon, logProductClick } from '../config/api';
 
 interface ProductDetailsProps {
   slug: string;
 }
 
 export default function ProductDetails({ slug }: ProductDetailsProps) {
-  const shouldReduceMotion = useReducedMotion();
   
-  // Find product by slug
-  const p = products.find((item) => item.slug === slug) || products[0];
+  // Find product state
+  const [product, setProduct] = useState<Product>(() => products.find((item) => item.slug === slug) || products[0]);
+
+  // Load product dynamically from API
+  useEffect(() => {
+    fetch(`${API_BASE_URL}/api/products/${slug}`)
+      .then(res => res.json())
+      .then((data) => {
+        if (data) {
+          const formatted = {
+            ...data,
+            price: typeof data.price === 'number' ? `₹${data.price.toLocaleString('en-IN')}` : data.price,
+            src: data.src.startsWith('/') ? `${API_BASE_URL}${data.src}` : data.src
+          };
+          setProduct(formatted);
+          // Log product click once loaded
+          logProductClick(slug, formatted.name);
+        }
+      })
+      .catch(err => {
+        console.warn('API error fetching product details:', err);
+        // Fallback tracking
+        const fallback = products.find((item) => item.slug === slug) || products[0];
+        logProductClick(slug, fallback.name);
+      });
+  }, [slug]);
+
+  const p = product;
 
   // Gallery Active Image
   const [activeImageIndex, setActiveImageIndex] = useState(0);
@@ -19,6 +45,11 @@ export default function ProductDetails({ slug }: ProductDetailsProps) {
   // Hover magnifier zoom details
   const [zoomPos, setZoomPos] = useState({ x: 0, y: 0 });
   const [isZooming, setIsZooming] = useState(false);
+
+  // Coupon entry states
+  const [couponInput, setCouponInput] = useState('');
+  const [appliedCoupon, setAppliedCoupon] = useState<any | null>(null);
+  const [couponError, setCouponError] = useState('');
 
   // Local Wishlist and Share state
   const [wishlisted, setWishlisted] = useState(false);
@@ -61,9 +92,39 @@ export default function ProductDetails({ slug }: ProductDetailsProps) {
     }
   }, [p.id]);
 
+  // Get numeric values for calculation
+  const originalPriceNum = typeof p.price === 'string' ? Number(p.price.replace(/[^0-9]/g, '')) : p.price;
+  const discountedPrice = appliedCoupon ? originalPriceNum - appliedCoupon.discountAmount : originalPriceNum;
+
+  // Coupon application handler
+  const handleApplyCoupon = async () => {
+    if (!couponInput.trim()) return;
+    setCouponError('');
+    try {
+      const result = await validateCoupon(couponInput, originalPriceNum);
+      if (result.valid) {
+        setAppliedCoupon(result);
+      } else {
+        setAppliedCoupon(null);
+        setCouponError(result.message || 'Invalid coupon code');
+      }
+    } catch (err: any) {
+      setAppliedCoupon(null);
+      setCouponError(err.message || 'Error validating coupon code');
+    }
+  };
+
   // Prefilled WhatsApp order trigger
   const handleOrder = () => {
-    const message = `Hello Plush.Palz! 👋\n\nI'm looking to order this beautiful plush from your website!\n\n🌸 Product Name: *${p.name}*\n🌌 Collection: *${p.universe}*\n💰 Price: *${p.price}*\n\nPlease let me know if it's available.\n\nThank you! ✨`;
+    let message = `Hello Plush.Palz! 👋\n\nI'm looking to order this beautiful plush from your website!\n\n🌸 Product Name: *${p.name}*\n🌌 Collection: *${p.universe}*\n`;
+    
+    if (appliedCoupon) {
+      message += `💰 Original Price: *₹${originalPriceNum.toLocaleString('en-IN')}*\n🎟️ Coupon Applied: *${appliedCoupon.code}* (-₹${appliedCoupon.discountAmount.toLocaleString('en-IN')})\n💸 Final Price: *₹${discountedPrice.toLocaleString('en-IN')}*\n`;
+    } else {
+      message += `💰 Price: *₹${originalPriceNum.toLocaleString('en-IN')}*\n`;
+    }
+
+    message += `\nPlease let me know if it's available.\n\nThank you! ✨`;
     const encoded = encodeURIComponent(message);
     const waUrl = `https://wa.me/918530595740?text=${encoded}`;
     window.open(waUrl, '_blank');
@@ -225,9 +286,21 @@ export default function ProductDetails({ slug }: ProductDetailsProps) {
             </div>
 
             {/* Price tag */}
-            <span className="text-4xl font-heading font-extrabold text-primary block mb-6 shadow-sm">
-              {p.price}
-            </span>
+            <div className="flex items-baseline gap-3 mb-6">
+              <span className="text-4xl font-heading font-extrabold text-primary shadow-sm">
+                ₹{discountedPrice.toLocaleString('en-IN')}
+              </span>
+              {(p.originalPrice || appliedCoupon) && (
+                <span className="text-sm font-heading font-semibold text-darkText/30 line-through">
+                  ₹{(p.originalPrice || originalPriceNum).toLocaleString('en-IN')}
+                </span>
+              )}
+              {p.isSpecialOffer && (
+                <span className="text-[10px] font-bold uppercase tracking-wider bg-candy text-white px-2.5 py-1 rounded-full shadow-sm ml-2">
+                  {p.discountPercentage ? `${p.discountPercentage}% Off` : 'Special Offer'}
+                </span>
+              )}
+            </div>
 
             {/* Paragraph details description */}
             <p className="font-body text-base text-darkText/80 leading-relaxed mb-8">
@@ -235,7 +308,7 @@ export default function ProductDetails({ slug }: ProductDetailsProps) {
             </p>
 
             {/* Grid of Feature Pills */}
-            <div className="grid grid-cols-2 gap-3.5 mb-10">
+            <div className="grid grid-cols-1 xs:grid-cols-2 gap-3.5 mb-10">
               <div className="bg-[#FFF5F8] border border-candy/10 rounded-2xl px-4 py-3 text-xs md:text-sm font-bold text-darkText/80 flex items-center gap-2.5 shadow-sm">
                 <span>🌸</span> Premium Imported
               </div>
@@ -248,6 +321,33 @@ export default function ProductDetails({ slug }: ProductDetailsProps) {
               <div className="bg-[#FEFCE8] border border-sunny/10 rounded-2xl px-4 py-3 text-xs md:text-sm font-bold text-darkText/80 flex items-center gap-2.5 shadow-sm">
                 <span>💬</span> WhatsApp Orders
               </div>
+            </div>
+
+            {/* Coupon Code Section */}
+            <div className="bg-[#FAF5FF] border border-primary/10 p-5 rounded-3xl mb-8 flex flex-col gap-3 font-body">
+              <span className="text-xs font-bold text-darkText/70 uppercase tracking-wider block">Have a Discount Coupon?</span>
+              <div className="flex gap-2">
+                <input 
+                  type="text" 
+                  placeholder="ENTER CODE (e.g. WELCOME10)" 
+                  value={couponInput}
+                  onChange={(e) => setCouponInput(e.target.value.toUpperCase())}
+                  className="flex-1 bg-white border border-darkText/10 rounded-2xl px-4.5 py-3 text-xs font-bold uppercase tracking-wider focus:outline-none"
+                />
+                <button 
+                  onClick={handleApplyCoupon}
+                  className="bg-primary hover:bg-primary/95 text-white font-heading font-bold text-xs px-5 py-3 rounded-2xl shadow-sm transition-all cursor-pointer"
+                >
+                  Apply
+                </button>
+              </div>
+              {couponError && <p className="text-[10px] text-candy font-bold mt-1">{couponError}</p>}
+              {appliedCoupon && (
+                <div className="flex items-center justify-between text-xs mt-1 bg-mint/10 border border-mint/20 text-mint font-bold px-4 py-2.5 rounded-2xl">
+                  <span>Code {appliedCoupon.code} Applied!</span>
+                  <span>-₹{appliedCoupon.discountAmount}</span>
+                </div>
+              )}
             </div>
           </div>
 

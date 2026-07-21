@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { MessageCircle, Star, Sparkles } from 'lucide-react';
+import { API_BASE_URL } from '../config/api';
 
 export type Universe = 'Pokémon' | 'Sanrio' | 'Anime' | 'Cute Animals' | 'Trending' | 'New Arrivals';
 
@@ -11,10 +12,15 @@ export interface Product {
   universe: Universe;
   src: string;
   price: string;
+  originalPrice?: number | null;
+  isSpecialOffer?: boolean;
+  discountPercentage?: number | null;
   description: string;
   badge?: string;
   floatingDecos: string[]; // Emojis or descriptions
 }
+// ... [rest of static products definitions can remain as is for fallbacks]
+
 
 export const universesList: { name: Universe; bg: string; text: string; plush: string; decos: string[]; tag: string }[] = [
   { name: 'Pokémon', bg: 'bg-gradient-soft-yellow border-sunny/20', text: 'text-sunny', plush: '/snorlax.png', decos: ['⚡', '💤', '⭐'], tag: 'Gotta Catch Em All!' },
@@ -137,7 +143,7 @@ export function UniversePortals({ selectedUniverse, onSelectUniverse }: Universe
   const [hoveredCard, setHoveredCard] = useState<string | null>(null);
 
   return (
-    <section id="universe" className="relative w-full py-24 bg-gradient-to-b from-[#F0F4FF] to-[#FAF5FF] px-6 md:px-12 lg:px-20 overflow-hidden">
+    <section id="universe" className="relative w-full py-12 md:py-20 lg:py-24 bg-gradient-to-b from-[#F0F4FF] to-[#FAF5FF] px-6 md:px-12 lg:px-20 overflow-hidden">
       
       {/* Drifting Clouds background */}
       <div className="absolute inset-0 pointer-events-none opacity-30 select-none overflow-hidden">
@@ -161,7 +167,7 @@ export function UniversePortals({ selectedUniverse, onSelectUniverse }: Universe
         </div>
 
         {/* Portal Cards Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 sm:gap-6">
           {universesList.map((u) => {
             const isSelected = selectedUniverse === u.name;
             const isHovered = hoveredCard === u.name;
@@ -173,7 +179,7 @@ export function UniversePortals({ selectedUniverse, onSelectUniverse }: Universe
                 onMouseLeave={() => setHoveredCard(null)}
                 whileHover={shouldReduceMotion ? {} : { y: -10, scale: 1.03 }}
                 whileTap={{ scale: 0.95 }}
-                className={`cursor-pointer rounded-[32px] p-6 border-2 text-center relative overflow-hidden transition-all duration-300 group ${
+                className={`cursor-pointer rounded-[32px] p-4 sm:p-6 border-2 text-center relative overflow-hidden transition-all duration-300 group ${
                   isSelected
                     ? 'bg-white shadow-[0_15px_35px_rgba(124,58,237,0.18)] border-primary ring-2 ring-primary/10'
                     : 'bg-white/80 backdrop-blur-sm hover:shadow-[0_12px_30px_rgba(0,0,0,0.04)] border-darkText/5'
@@ -254,15 +260,30 @@ interface TrendingCollectionProps {
 }
 
 export function TrendingCollection({ selectedUniverse, onSelectUniverse }: TrendingCollectionProps) {
-  const shouldReduceMotion = useReducedMotion();
-  const [hoveredCard, setHoveredCard] = useState<number | null>(null);
+  const [productList, setProductList] = useState<Product[]>(products);
+
+  useEffect(() => {
+    fetch(`${API_BASE_URL}/api/products`)
+      .then(res => res.json())
+      .then((data: any[]) => {
+        if (data && data.length > 0) {
+          const formatted = data.map(p => ({
+            ...p,
+            price: typeof p.price === 'number' ? `₹${p.price.toLocaleString('en-IN')}` : p.price,
+            src: p.src.startsWith('/') ? `${API_BASE_URL}${p.src}` : p.src
+          }));
+          setProductList(formatted);
+        }
+      })
+      .catch(err => console.warn('Failed to load products from API:', err));
+  }, []);
 
   const filteredProducts = selectedUniverse === 'All'
-    ? products
-    : products.filter(p => p.universe === selectedUniverse);
+    ? productList
+    : productList.filter(p => p.universe === selectedUniverse);
 
   return (
-    <section id="trending" className="relative w-full py-24 bg-white px-6 md:px-12 lg:px-20 border-t border-b border-darkText/[0.02] overflow-hidden">
+    <section id="trending" className="relative w-full py-12 md:py-20 lg:py-24 bg-white px-6 md:px-12 lg:px-20 border-t border-b border-darkText/[0.02] overflow-hidden">
       
       {/* Tiny drifting elements */}
       <div className="absolute top-[10%] left-[5%] w-2 h-2 bg-candy/25 rounded-full animate-ping opacity-30 pointer-events-none" />
@@ -301,10 +322,9 @@ export function TrendingCollection({ selectedUniverse, onSelectUniverse }: Trend
         )}
 
         {/* Grid layout (Up to 5 columns on large screen monitors, gap: 32px) */}
-        <div className="grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 sm:gap-8">
           <AnimatePresence mode="popLayout">
             {filteredProducts.map((p) => {
-              const isHovered = hoveredCard === p.id;
               return (
                 <motion.div
                   key={p.id}
@@ -313,8 +333,6 @@ export function TrendingCollection({ selectedUniverse, onSelectUniverse }: Trend
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.95 }}
                   transition={{ duration: 0.35 }}
-                  onMouseEnter={() => setHoveredCard(p.id)}
-                  onMouseLeave={() => setHoveredCard(null)}
                   onClick={() => {
                     window.location.hash = `#/products/${p.slug}`;
                   }}
@@ -372,9 +390,16 @@ export function TrendingCollection({ selectedUniverse, onSelectUniverse }: Trend
                       </p>
                     </div>
                     <div className="flex items-center justify-between mt-5">
-                      <span className="font-heading font-extrabold text-primary text-lg">
-                        {p.price}
-                      </span>
+                      <div className="flex flex-col">
+                        <span className="font-heading font-extrabold text-primary text-lg leading-tight">
+                          {p.price}
+                        </span>
+                        {p.originalPrice && (
+                          <span className="text-[10px] text-darkText/30 line-through leading-none mt-1">
+                            ₹{p.originalPrice.toLocaleString('en-IN')}
+                          </span>
+                        )}
+                      </div>
                       <span className="text-[10px] font-bold text-candy flex items-center gap-1 group-hover:underline">
                         <span>Meet This Plush</span>
                         <span>→</span>

@@ -27,7 +27,7 @@ const contactCards = [
 
 export default function Contact() {
   return (
-    <section id="contact" className="relative mt-24">
+    <section id="contact" className="relative mt-12 md:mt-24">
       {/* Self-contained CSS styles for the shooting star */}
       <style>{`
         @keyframes shooting-star-anim {
@@ -54,7 +54,7 @@ export default function Contact() {
       `}</style>
 
       {/* Rebranded Section: Adopt Your New Buddy */}
-      <div className="max-w-4xl mx-auto text-center px-6 mb-20">
+      <div className="max-w-4xl mx-auto text-center px-6 mb-10 md:mb-20">
         <span className="text-xs font-bold uppercase tracking-[0.2em] text-primary bg-primary/5 px-4.5 py-2 rounded-full mb-4 border border-primary/10 inline-block">
           Adopt Your New Buddy
         </span>
@@ -190,9 +190,11 @@ export default function Contact() {
 
           {/* Logo brand wordmark */}
           <div className="flex items-center gap-2 mb-3">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-candy to-primary flex items-center justify-center">
-              <span className="font-heading text-white text-xs font-bold">P.P</span>
-            </div>
+            <img
+              src="/logo.jpeg"
+              alt="Plush.Palz Logo"
+              className="w-8 h-8 rounded-full object-cover shadow-md"
+            />
             <span className="font-heading text-xl font-bold tracking-tight">
               Plush<span className="text-candy">.Palz</span>
             </span>

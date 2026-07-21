@@ -1,5 +1,7 @@
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Instagram, ArrowRight, Sparkles, Star } from 'lucide-react';
+import { API_BASE_URL } from '../config/api';
 
 interface HeroProps {
   introStage?: 'playing' | 'revealing' | 'complete';
@@ -60,11 +62,44 @@ const floatingCharacters = [
 
 export default function Hero({ introStage = 'complete' }: HeroProps) {
   const isPlaying = introStage === 'playing';
+  const [characters, setCharacters] = useState(floatingCharacters);
+
+  useEffect(() => {
+    fetch(`${API_BASE_URL}/api/sections/hero`)
+      .then(res => res.json())
+      .then((data: any[]) => {
+        if (data && data.length > 0) {
+          const updated = floatingCharacters.map(char => {
+            let key = '';
+            if (char.name === 'Loopy') key = 'char_loopy';
+            else if (char.name === 'Lotso') key = 'char_lotso';
+            else if (char.name === 'Snorlax') key = 'char_snorlax';
+            else if (char.name === 'Bunny') key = 'char_bunny';
+            else if (char.name === 'Purple Plush') key = 'char_purple';
+
+            const match = data.find(item => item.key === key);
+            if (match) {
+              const fullImgUrl = match.imageUrl.startsWith('/') 
+                ? `${API_BASE_URL}${match.imageUrl}` 
+                : match.imageUrl;
+              return {
+                ...char,
+                src: fullImgUrl,
+                tag: match.label || char.tag
+              };
+            }
+            return char;
+          });
+          setCharacters(updated);
+        }
+      })
+      .catch(err => console.warn('Failed to load hero section images:', err));
+  }, []);
 
   return (
     <section
       id="hero"
-      className="relative min-h-[95vh] flex items-center justify-center pt-32 pb-24 px-6 overflow-hidden bg-gradient-to-b from-[#F8FAFF] via-[#F2F6FF] to-[#FAF5FF]"
+      className="relative min-h-[65vh] lg:min-h-[95vh] flex items-center justify-center pt-24 pb-16 lg:pt-32 lg:pb-24 px-6 overflow-hidden bg-gradient-to-b from-[#F8FAFF] via-[#F2F6FF] to-[#FAF5FF]"
     >
       {/* 1. Cinematic Background Elements */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[85vw] h-[35vh] bg-gradient-to-r from-candy/15 via-primary/5 to-sky/15 rounded-full blur-[110px] pointer-events-none" />
@@ -102,8 +137,8 @@ export default function Hero({ introStage = 'complete' }: HeroProps) {
 
       {/* 2. Floating Characters */}
       {!isPlaying && (
-        <div className="absolute inset-0 w-full h-full pointer-events-none z-20">
-          {floatingCharacters.map((char, index) => (
+        <div className="absolute inset-0 w-full h-full pointer-events-none z-20 hidden lg:block">
+          {characters.map((char, index) => (
             <motion.div
               key={char.name}
               className={`absolute ${char.position} pointer-events-auto`}
@@ -179,7 +214,7 @@ export default function Hero({ introStage = 'complete' }: HeroProps) {
           className="mb-8 flex items-center gap-2 bg-white border border-primary/10 px-4.5 py-2 rounded-full shadow-md z-30 font-heading font-bold text-[11px] sm:text-xs text-primary"
         >
           <Sparkles className="w-4 h-4 text-primary animate-pulse" />
-          <span>✨ Welcome to the Plush.Palz Universe ✨</span>
+          <span><span>✨ Welcome to the Plush.Palz Universe ✨</span></span>
         </motion.div>
 
         {/* Large Cinematic Headline */}
@@ -187,7 +222,7 @@ export default function Hero({ introStage = 'complete' }: HeroProps) {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.3, type: 'spring', stiffness: 80 }}
-          className="font-heading text-5xl sm:text-6xl md:text-8xl lg:text-9xl text-darkText font-extrabold tracking-tight leading-[1.05] mb-8 max-w-5xl select-none"
+          className="font-heading text-4xl sm:text-6xl md:text-8xl lg:text-9xl text-darkText font-extrabold tracking-tight leading-[1.05] mb-8 max-w-5xl select-none"
         >
           Collect Your <br />
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-candy via-primary to-sky text-shadow-glow">

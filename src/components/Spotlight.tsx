@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { ChevronLeft, ChevronRight, MessageCircle, Star, Sparkles } from 'lucide-react';
+import { API_BASE_URL } from '../config/api';
 
 interface Slide {
   id: number;
@@ -85,29 +86,68 @@ const spotlightSlides: Slide[] = [
 ];
 
 export default function Spotlight() {
+  const [slides, setSlides] = useState<Slide[]>(spotlightSlides);
   const [activeIndex, setActiveIndex] = useState(0);
   const [direction, setDirection] = useState(0); // -1 for left, 1 for right
   const shouldReduceMotion = useReducedMotion();
 
+  // Load from backend
+  useEffect(() => {
+    fetch(`${API_BASE_URL}/api/products`)
+      .then(res => res.json())
+      .then((data: any[]) => {
+        if (data && data.length > 0) {
+          const offers = data.filter(p => p.isSpecialOffer);
+          const displayData = offers.length > 0 ? offers : data;
+
+          const formatted = displayData.map((p, index) => {
+            const colors = [
+              { bg: 'from-[#FFF0F5] via-[#FFE3EC] to-[#FFD1E0]', glow: 'rgba(255, 111, 181, 0.25)', textColor: 'text-candy' },
+              { bg: 'from-[#E6F8FF] via-[#CCEFFF] to-[#B3E6FF]', glow: 'rgba(102, 217, 255, 0.25)', textColor: 'text-sky' },
+              { bg: 'from-[#FFFDF0] via-[#FFF5D6] to-[#FFE6A3]', glow: 'rgba(255, 213, 79, 0.25)', textColor: 'text-sunny' },
+              { bg: 'from-[#F3E8FF] via-[#E9D5FF] to-[#D8B4FE]', glow: 'rgba(124, 58, 237, 0.25)', textColor: 'text-primary' },
+            ];
+            const colorScheme = colors[index % colors.length];
+            return {
+              id: p.id,
+              slug: p.slug,
+              name: p.name,
+              tagline: p.badge ? `${p.badge} ✨` : 'Special Pick 🌸',
+              desc: p.description,
+              src: p.src.startsWith('/') ? `${API_BASE_URL}${p.src}` : p.src,
+              price: `₹${p.price}`,
+              bg: colorScheme.bg,
+              glow: colorScheme.glow,
+              textColor: colorScheme.textColor,
+              emojis: p.floatingDecos || ['✨']
+            };
+          });
+          setSlides(formatted);
+        }
+      })
+      .catch(err => console.warn('Failed to load spotlight slides from API:', err));
+  }, []);
+
   // Slide auto-rotator
   useEffect(() => {
+    if (slides.length <= 1) return;
     const timer = setInterval(() => {
       handleNext();
     }, 6000);
     return () => clearInterval(timer);
-  }, [activeIndex]);
+  }, [activeIndex, slides.length]);
 
   const handleNext = () => {
     setDirection(1);
-    setActiveIndex((prev) => (prev + 1) % spotlightSlides.length);
+    setActiveIndex((prev) => (prev + 1) % slides.length);
   };
 
   const handlePrev = () => {
     setDirection(-1);
-    setActiveIndex((prev) => (prev - 1 + spotlightSlides.length) % spotlightSlides.length);
+    setActiveIndex((prev) => (prev - 1 + slides.length) % slides.length);
   };
 
-  const current = spotlightSlides[activeIndex];
+  const current = slides[activeIndex] || spotlightSlides[0];
 
   // Prefilled WhatsApp order
   const handleOrder = () => {
@@ -123,7 +163,7 @@ export default function Spotlight() {
   };
 
   // Variants for slide deck animations
-  const slideVariants = {
+  const slideVariants: any = {
     enter: (dir: number) => ({
       x: dir > 0 ? 100 : -100,
       opacity: 0,
@@ -141,7 +181,7 @@ export default function Spotlight() {
   };
 
   return (
-    <section id="spotlight" className="relative w-full py-28 px-6 md:px-12 lg:px-20 bg-white overflow-hidden border-b border-darkText/[0.02]">
+    <section id="spotlight" className="relative w-full py-12 md:py-20 lg:py-28 px-6 md:px-12 lg:px-20 bg-white overflow-hidden border-b border-darkText/[0.02]">
       
       {/* Decorative floating clouds at the margins */}
       <div className="absolute inset-0 pointer-events-none select-none z-10 opacity-30">
@@ -165,7 +205,7 @@ export default function Spotlight() {
         </div>
 
         {/* Slide deck showcase */}
-        <div className={`relative rounded-[40px] bg-gradient-to-tr ${current.bg} border border-white/60 p-8 md:p-12 lg:p-16 shadow-xl transition-colors duration-700 min-h-[520px] flex items-center`}>
+        <div className={`relative rounded-[40px] bg-gradient-to-tr ${current.bg} border border-white/60 p-4 sm:p-8 md:p-12 lg:p-16 shadow-xl transition-colors duration-700 min-h-[520px] flex items-center`}>
           
           {/* Glowing back-orb for the plush */}
           <div
@@ -181,7 +221,7 @@ export default function Spotlight() {
               initial="enter"
               animate="center"
               exit="exit"
-              className="w-full grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-center relative z-10"
+              className="w-full grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-center relative z-10 px-8 sm:px-0"
             >
               {/* Image box (Left 55% on desktop layout) */}
               <div className="lg:col-span-6 flex justify-center relative">
@@ -219,7 +259,7 @@ export default function Spotlight() {
                   {current.tagline}
                 </span>
 
-                <h3 className="font-heading text-3xl sm:text-5xl text-darkText font-extrabold mb-5 tracking-tight leading-tight">
+                <h3 className="font-heading text-2xl xs:text-3xl sm:text-5xl text-darkText font-extrabold mb-5 tracking-tight leading-tight">
                   {current.name}
                 </h3>
 

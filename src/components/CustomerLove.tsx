@@ -49,7 +49,7 @@ const container = {
   show: { transition: { staggerChildren: 0.1 } },
 };
 
-const item = {
+const item: any = {
   hidden: { opacity: 0, scale: 0.95, y: 20 },
   show: {
     opacity: 1,
@@ -61,7 +61,7 @@ const item = {
 
 export default function CustomerLove() {
   return (
-    <section id="reviews" className="relative w-full py-28 bg-gradient-to-b from-[#FAF5FF] to-[#FFF0F6] px-6 md:px-12 lg:px-20 overflow-hidden">
+    <section id="reviews" className="relative w-full py-12 md:py-20 lg:py-28 bg-gradient-to-b from-[#FAF5FF] to-[#FFF0F6] px-6 md:px-12 lg:px-20 overflow-hidden">
       
       {/* Sparkles decoration */}
       <div className="absolute inset-0 pointer-events-none select-none z-10 opacity-30">

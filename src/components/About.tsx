@@ -1,9 +1,36 @@
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Star, Sparkles, Heart } from 'lucide-react';
+import { API_BASE_URL } from '../config/api';
 
 export default function About() {
+  const [mascots, setMascots] = useState({
+    back: '/snorlax.png',
+    left: '/loopy.png',
+    right: '/lotso.png'
+  });
+
+  useEffect(() => {
+    fetch(`${API_BASE_URL}/api/sections/about`)
+      .then(res => res.json())
+      .then((data: any[]) => {
+        if (data && data.length > 0) {
+          const backAsset = data.find(item => item.key === 'mascot_back');
+          const leftAsset = data.find(item => item.key === 'mascot_left');
+          const rightAsset = data.find(item => item.key === 'mascot_right');
+
+          setMascots({
+            back: backAsset?.imageUrl ? (backAsset.imageUrl.startsWith('/') ? `${API_BASE_URL}${backAsset.imageUrl}` : backAsset.imageUrl) : '/snorlax.png',
+            left: leftAsset?.imageUrl ? (leftAsset.imageUrl.startsWith('/') ? `${API_BASE_URL}${leftAsset.imageUrl}` : leftAsset.imageUrl) : '/loopy.png',
+            right: rightAsset?.imageUrl ? (rightAsset.imageUrl.startsWith('/') ? `${API_BASE_URL}${rightAsset.imageUrl}` : rightAsset.imageUrl) : '/lotso.png',
+          });
+        }
+      })
+      .catch(err => console.warn('Failed to load about section images:', err));
+  }, []);
+
   return (
-    <section id="about" className="relative w-full py-28 bg-gradient-to-b from-[#FAF5FF] to-[#F0F4FF] px-6 md:px-12 lg:px-20 overflow-hidden">
+    <section id="about" className="relative w-full py-12 md:py-20 lg:py-28 bg-gradient-to-b from-[#FAF5FF] to-[#F0F4FF] px-6 md:px-12 lg:px-20 overflow-hidden">
       
       {/* Sparkles background layer */}
       <div className="absolute inset-0 pointer-events-none select-none opacity-40">
@@ -29,30 +56,32 @@ export default function About() {
             {/* Mascot Group Stack */}
             <div className="relative w-full h-full flex items-center justify-center">
               {/* Snorlax center back */}
-              <motion.img
-                src="/snorlax.png"
-                alt="Snorlax back mascot"
-                animate={{ y: [-4, 4, -4], rotate: [-1, 1, -1] }}
-                transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-                className="absolute w-[60%] h-[60%] object-contain filter drop-shadow-md z-10 bottom-12"
-              />
+              <div className="absolute w-[50%] h-[50%] bottom-[44%] left-1/2 -translate-x-1/2 z-10 flex items-center justify-center">
+                <motion.img
+                  src={mascots.back}
+                  alt="Snorlax back mascot"
+                  animate={{ y: [-4, 4, -4], rotate: [-1, 1, -1] }}
+                  transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+                  className="w-full h-full object-contain filter drop-shadow-md"
+                />
+              </div>
 
               {/* Loopy bottom left front */}
               <motion.img
-                src="/loopy.png"
+                src={mascots.left}
                 alt="Loopy front left mascot"
                 animate={{ y: [4, -4, 4], rotate: [-3, 2, -3] }}
                 transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
-                className="absolute w-[45%] h-[45%] object-contain filter drop-shadow-md z-20 bottom-2 left-2"
+                className="absolute w-[40%] h-[40%] object-contain filter drop-shadow-md z-20 bottom-[4%] left-[4%]"
               />
 
               {/* Lotso bottom right front */}
               <motion.img
-                src="/lotso.png"
+                src={mascots.right}
                 alt="Lotso front right mascot"
                 animate={{ y: [-3, 3, -3], rotate: [2, -2, 2] }}
                 transition={{ duration: 5.5, repeat: Infinity, ease: 'easeInOut', delay: 0.2 }}
-                className="absolute w-[48%] h-[48%] object-contain filter drop-shadow-md z-20 bottom-2 right-2"
+                className="absolute w-[40%] h-[40%] object-contain filter drop-shadow-md z-20 bottom-[4%] right-[4%]"
               />
             </div>
           </div>

@@ -54,7 +54,7 @@ const container = {
   },
 };
 
-const item = {
+const item: any = {
   hidden: { opacity: 0, y: 30, scale: 0.95 },
   show: {
     opacity: 1,
@@ -89,7 +89,7 @@ export default function WhyUs() {
   };
 
   return (
-    <section id="why" className="relative w-full py-24 bg-white px-6 md:px-12 lg:px-20 border-b border-darkText/[0.02]">
+    <section id="why" className="relative w-full py-12 md:py-20 lg:py-24 bg-white px-6 md:px-12 lg:px-20 border-b border-darkText/[0.02]">
       <div className="max-w-[1500px] mx-auto">
         <div className="text-center mb-16">
           <span className="text-xs font-bold uppercase tracking-[0.2em] text-primary bg-primary/5 px-4 py-1.5 rounded-full mb-3 inline-block">

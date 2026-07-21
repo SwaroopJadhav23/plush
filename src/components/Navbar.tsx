@@ -34,13 +34,13 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
         {/* Logo Plush.Palz */}
         <a href="#hero" className="flex items-center gap-2 group">
-          <motion.div
+          <motion.img
+            src="/logo.jpeg"
+            alt="Plush.Palz Logo"
             whileHover={{ scale: 1.1, rotate: [0, -5, 5, 0] }}
             transition={{ duration: 0.4 }}
-            className="w-10 h-10 rounded-full bg-gradient-to-tr from-candy to-primary flex items-center justify-center shadow-[0_4px_12px_rgba(255,111,181,0.3)]"
-          >
-            <span className="font-heading text-white text-base font-bold">P.P</span>
-          </motion.div>
+            className="w-14 h-14 rounded-full object-cover shadow-[0_4px_12px_rgba(255,111,181,0.3)]"
+          />
           <span className="font-heading text-2xl tracking-tight text-darkText font-bold select-none">
             Plush<span className="text-candy">.Palz</span>
           </span>

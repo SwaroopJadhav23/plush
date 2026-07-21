@@ -14,7 +14,9 @@ import HowItWorks from './components/HowItWorks';
 import Contact from './components/Contact';
 import BrandIntro from './components/BrandIntro';
 import ProductDetails from './components/ProductDetails';
+import AdminDashboard from './components/AdminDashboard';
 import { CloudDivider, CurveDivider } from './components/Transitions';
+import { logPageVisit } from './config/api';
 
 function App() {
   const [introStage, setIntroStage] = useState<'playing' | 'revealing' | 'complete'>(() => {
@@ -31,30 +33,56 @@ function App() {
   // Shared category selection state
   const [selectedUniverse, setSelectedUniverse] = useState<Universe | 'All'>('All');
 
-  // Simple SPA hash router state
-  const [route, setRoute] = useState(() => {
+  // Simple SPA routing state (handles pathnames and hashes)
+  interface RouteState {
+    type: 'home' | 'product' | 'admin';
+    slug?: string;
+  }
+  const [route, setRoute] = useState<RouteState>(() => {
     if (typeof window !== 'undefined') {
       const hash = window.location.hash;
+      const path = window.location.pathname;
+      if (hash === '#/admin' || hash === '#admin' || path === '/admin' || path === '/admin/') {
+        return { type: 'admin' };
+      }
       if (hash.startsWith('#/products/')) {
         return { type: 'product', slug: hash.replace('#/products/', '') };
+      }
+      if (path.startsWith('/products/')) {
+        return { type: 'product', slug: path.replace('/products/', '') };
       }
     }
     return { type: 'home' };
   });
 
-  // Track hash changes for routing
+  // Track page visits on route change
   useEffect(() => {
-    const handleHashChange = () => {
+    const currentPath = window.location.hash || window.location.pathname || '#/';
+    logPageVisit(currentPath);
+  }, [route]);
+
+  // Track navigation changes
+  useEffect(() => {
+    const handleRouting = () => {
       const hash = window.location.hash;
-      if (hash.startsWith('#/products/')) {
+      const path = window.location.pathname;
+      if (hash === '#/admin' || hash === '#admin' || path === '/admin' || path === '/admin/') {
+        setRoute({ type: 'admin' });
+      } else if (hash.startsWith('#/products/')) {
         setRoute({ type: 'product', slug: hash.replace('#/products/', '') });
+      } else if (path.startsWith('/products/')) {
+        setRoute({ type: 'product', slug: path.replace('/products/', '') });
       } else {
         setRoute({ type: 'home' });
       }
       window.scrollTo({ top: 0 });
     };
-    window.addEventListener('hashchange', handleHashChange);
-    return () => window.removeEventListener('hashchange', handleHashChange);
+    window.addEventListener('hashchange', handleRouting);
+    window.addEventListener('popstate', handleRouting);
+    return () => {
+      window.removeEventListener('hashchange', handleRouting);
+      window.removeEventListener('popstate', handleRouting);
+    };
   }, []);
 
   // Initialize Lenis smooth scroll
@@ -124,9 +152,11 @@ function App() {
       <FloatingBackground isActive={introStage === 'complete'} />
 
       {/* Sticky Top Header Nav — fades in after intro */}
-      <div className={introStage === 'playing' ? 'opacity-0 pointer-events-none' : 'opacity-100 transition-opacity duration-[800ms] delay-[300ms]'}>
-        <Navbar />
-      </div>
+      {route.type !== 'admin' && (
+        <div className={introStage === 'playing' ? 'opacity-0 pointer-events-none' : 'opacity-100 transition-opacity duration-[800ms] delay-[300ms]'}>
+          <Navbar />
+        </div>
+      )}
 
       <main className="relative z-20">
         {route.type === 'home' ? (
@@ -170,9 +200,11 @@ function App() {
             {/* Section 10: Adopt Your New Buddy + Starry Night sky footer */}
             <Contact />
           </>
+        ) : route.type === 'admin' ? (
+          <AdminDashboard />
         ) : (
           <>
-            <ProductDetails slug={route.slug} />
+            {route.slug && <ProductDetails slug={route.slug} />}
             <Contact />
           </>
         )}

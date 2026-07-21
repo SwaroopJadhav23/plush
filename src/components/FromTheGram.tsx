@@ -68,7 +68,7 @@ export default function FromTheGram() {
   };
 
   return (
-    <section id="instagram" className="relative w-full py-24 bg-[#FFF5F8] px-6 md:px-12 lg:px-20 border-b border-darkText/[0.01] overflow-hidden">
+    <section id="instagram" className="relative w-full py-12 md:py-20 lg:py-24 bg-[#FFF5F8] px-6 md:px-12 lg:px-20 border-b border-darkText/[0.01] overflow-hidden">
       <div className="max-w-[1700px] mx-auto">
         {/* Header */}
         <div className="text-center mb-16">
