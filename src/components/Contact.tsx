@@ -1,6 +1,7 @@
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Mail, Instagram, MessageCircle, MapPin, Star } from 'lucide-react';
-import { WHATSAPP_NUMBER, WHATSAPP_DISPLAY_NUMBER } from '../config/api';
+import { WHATSAPP_NUMBER, WHATSAPP_DISPLAY_NUMBER, API_BASE_URL } from '../config/api';
 
 const contactCards = [
   {
@@ -28,6 +29,22 @@ const contactCards = [
 ];
 
 export default function Contact() {
+  const [snorlaxImg, setSnorlaxImg] = useState('/snorlax.png');
+
+  useEffect(() => {
+    fetch(`${API_BASE_URL}/api/sections/about`)
+      .then(res => res.json())
+      .then((data: any[]) => {
+        if (data && data.length > 0) {
+          const backAsset = data.find(item => item.key === 'mascot_back');
+          if (backAsset?.imageUrl) {
+            setSnorlaxImg(backAsset.imageUrl.startsWith('/') ? `${API_BASE_URL}${backAsset.imageUrl}` : backAsset.imageUrl);
+          }
+        }
+      })
+      .catch(err => console.warn('Failed to load footer Snorlax image:', err));
+  }, []);
+
   return (
     <section id="contact" className="relative pt-28 sm:pt-32 md:pt-36 pb-12 overflow-hidden scroll-mt-28">
       {/* Self-contained CSS styles for the shooting star */}
@@ -184,7 +201,7 @@ export default function Contact() {
                 <path d="M 10,40 A 12,12 0 0,1 30,20 A 15,15 0 0,1 70,20 A 12,12 0 0,1 90,40 Z" />
               </svg>
               <motion.img
-                src="/snorlax.png"
+                src={snorlaxImg}
                 alt="Sleeping Snorlax"
                 animate={{ y: [-2, 2, -2] }}
                 transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
