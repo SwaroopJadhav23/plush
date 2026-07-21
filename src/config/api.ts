@@ -1,5 +1,13 @@
-const rawApiUrl = (import.meta.env.VITE_API_BASE_URL as string) || 'http://localhost:5000';
+const isLocalhost = typeof window !== 'undefined' && 
+  (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+
+const defaultBackend = isLocalhost 
+  ? 'http://localhost:5000' 
+  : 'https://plush-z82c.onrender.com';
+
+const rawApiUrl = (import.meta.env.VITE_API_BASE_URL as string) || defaultBackend;
 export const API_BASE_URL = rawApiUrl.replace(/\/+$/, '');
+
 
 export const WHATSAPP_NUMBER = '918459573778';
 export const WHATSAPP_DISPLAY_NUMBER = '+91 84595 73778';
