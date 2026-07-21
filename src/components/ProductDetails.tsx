@@ -193,7 +193,7 @@ export default function ProductDetails({ slug }: ProductDetailsProps) {
   ];
 
   return (
-    <div className="max-w-7xl mx-auto px-4 md:px-6 py-12 pt-28 relative">
+    <div className="max-w-7xl mx-auto px-4 md:px-6 py-12 pt-28 pb-32 lg:pb-12 relative">
       
       {/* 1. Breadcrumbs Header & Navigation */}
       <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
@@ -343,19 +343,19 @@ export default function ProductDetails({ slug }: ProductDetailsProps) {
             </div>
 
             {/* Coupon Code Section */}
-            <div className="bg-[#FAF5FF] border border-primary/10 p-5 rounded-3xl mb-8 flex flex-col gap-3 font-body">
+            <div className="bg-[#FAF5FF] border border-primary/10 p-5 sm:p-6 rounded-3xl mb-8 flex flex-col gap-3 font-body">
               <span className="text-xs font-bold text-darkText/70 uppercase tracking-wider block">Have a Discount Coupon?</span>
-              <div className="flex gap-2">
+              <div className="flex gap-2.5 items-center">
                 <input 
                   type="text" 
-                  placeholder="ENTER CODE (e.g. WELCOME10)" 
+                  placeholder="ENTER CODE (E.G. WELCOME10)" 
                   value={couponInput}
                   onChange={(e) => setCouponInput(e.target.value.toUpperCase())}
-                  className="flex-1 bg-white border border-darkText/10 rounded-2xl px-4.5 py-3 text-xs font-bold uppercase tracking-wider focus:outline-none"
+                  className="flex-1 bg-white border border-darkText/10 rounded-2xl px-4 h-12 text-xs sm:text-sm font-bold uppercase tracking-wider focus:outline-none focus:border-primary/50"
                 />
                 <button 
                   onClick={handleApplyCoupon}
-                  className="bg-primary hover:bg-primary/95 text-white font-heading font-bold text-xs px-5 py-3 rounded-2xl shadow-sm transition-all cursor-pointer"
+                  className="bg-primary hover:bg-primary/95 text-white font-heading font-extrabold text-xs sm:text-sm px-6 h-12 rounded-2xl shadow-sm transition-all cursor-pointer flex items-center justify-center shrink-0"
                 >
                   Apply
                 </button>
@@ -373,11 +373,12 @@ export default function ProductDetails({ slug }: ProductDetailsProps) {
           {/* Action CTAs */}
           <div className="flex flex-col gap-4">
             {/* Primary Order Button */}
+            {/* Primary Order Button */}
             <motion.button
               onClick={handleOrder}
               whileHover={{ scale: 1.02, y: -2 }}
               whileTap={{ scale: 0.98 }}
-              className="w-full bg-gradient-to-r from-[#25D366] via-[#20BD5A] to-[#128C7E] text-white font-heading font-extrabold py-4 px-8 rounded-full flex items-center justify-center gap-3 shadow-[0_8px_25px_rgba(37,211,102,0.35)] hover:shadow-[0_12px_35px_rgba(37,211,102,0.55)] transition-all cursor-pointer text-base md:text-lg tracking-wide group"
+              className="w-full bg-gradient-to-r from-[#25D366] via-[#20BD5A] to-[#128C7E] text-white font-heading font-extrabold py-4 px-8 rounded-full flex items-center justify-center gap-3 shadow-[0_4px_18px_rgba(37,211,102,0.25)] hover:shadow-[0_8px_25px_rgba(37,211,102,0.4)] transition-all cursor-pointer text-base md:text-lg tracking-wide group"
             >
               <svg className="w-6 h-6 fill-current text-white shrink-0 group-hover:scale-110 transition-transform duration-300" viewBox="0 0 24 24">
                 <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.105 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-1.15 4.2 4.293-1.133zm4.792-3.691c-.272-.136-1.61-.795-1.86-.886-.25-.091-.432-.136-.613.136-.182.272-.704.886-.863 1.068-.159.182-.318.205-.59.068-.272-.136-1.15-.424-2.19-1.352-.81-.723-1.357-1.616-1.516-1.888-.159-.272-.017-.419.119-.554.123-.122.272-.318.409-.477.136-.159.182-.272.272-.454.091-.182.045-.341-.023-.477-.068-.136-.613-1.477-.84-2.023-.222-.533-.448-.461-.613-.469-.158-.008-.34-.008-.522-.008s-.477.068-.727.341c-.25.272-.954.932-.954 2.273s.977 2.636 1.114 2.818c.136.182 1.923 2.937 4.659 4.12 2.736 1.183 2.736.789 3.236.739.5-.05 1.61-.659 1.837-1.295.227-.636.227-1.182.159-1.295-.068-.113-.25-.182-.522-.318z"/>
@@ -386,28 +387,28 @@ export default function ProductDetails({ slug }: ProductDetailsProps) {
             </motion.button>
 
             {/* Secondary wishlists & shares */}
-            <div className="flex gap-4">
+            <div className="flex gap-3 sm:gap-4 mt-2 sm:mt-3">
               <motion.button
                 onClick={() => setWishlisted(!wishlisted)}
-                whileHover={{ scale: 1.03, y: -1 }}
-                whileTap={{ scale: 0.97 }}
-                className={`flex-1 border-2 py-3 px-6 rounded-full font-heading font-bold text-sm flex items-center justify-center gap-2 transition-all cursor-pointer ${
+                whileHover={{ scale: 1.02, y: -1 }}
+                whileTap={{ scale: 0.98 }}
+                className={`flex-1 border border-darkText/10 py-3 px-3 sm:px-6 rounded-2xl font-heading font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all cursor-pointer h-12 ${
                   wishlisted
                     ? 'border-candy bg-[#FFF5F8] text-candy shadow-[0_4px_12px_rgba(255,111,181,0.15)]'
-                    : 'border-darkText/10 text-darkText/70 hover:border-candy hover:text-candy'
+                    : 'bg-white hover:bg-bgMain hover:border-candy/30 text-darkText/70 hover:text-candy shadow-sm'
                 }`}
               >
-                <Heart size={18} className={wishlisted ? 'fill-candy text-candy' : ''} />
+                <Heart size={16} className={wishlisted ? 'fill-candy text-candy' : ''} />
                 <span>{wishlisted ? 'Wishlisted!' : 'Add to Wishlist'}</span>
               </motion.button>
 
               <motion.button
                 onClick={handleShare}
-                whileHover={{ scale: 1.03, y: -1 }}
-                whileTap={{ scale: 0.97 }}
-                className="border-2 border-darkText/10 text-darkText/70 hover:bg-bgMain py-3 px-6 rounded-full font-heading font-semibold text-sm flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+                whileHover={{ scale: 1.02, y: -1 }}
+                whileTap={{ scale: 0.98 }}
+                className="flex-1 border border-darkText/10 bg-white hover:bg-bgMain hover:border-candy/30 py-3 px-3 sm:px-6 rounded-2xl font-heading font-semibold text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-all cursor-pointer h-12 text-darkText/70 hover:text-candy shadow-sm"
               >
-                <Share2 size={16} />
+                <Share2 size={15} />
                 <span>{copied ? 'Copied Link!' : 'Share Product'}</span>
               </motion.button>
             </div>
@@ -480,14 +481,14 @@ export default function ProductDetails({ slug }: ProductDetailsProps) {
           </p>
 
           {/* Social counts */}
-          <div className="flex gap-6 text-sm font-bold text-white/90 bg-white/5 border border-white/10 px-5 py-3 rounded-full w-fit">
+          <div className="flex flex-wrap sm:flex-nowrap items-center justify-around sm:justify-start gap-3 sm:gap-6 text-xs sm:text-sm font-bold text-white/90 bg-white/5 border border-white/10 px-4 sm:px-5 py-3 rounded-2xl sm:rounded-full w-full sm:w-fit">
             <span className="flex items-center gap-1.5 text-candy">
               ❤️ {mockReel.likes} likes
             </span>
             <span className="flex items-center gap-1.5 text-sky">
               💬 {mockReel.comments} comments
             </span>
-            <span className="text-white/60">
+            <span className="flex items-center gap-1.5 text-white/60">
               ⚡ {mockReel.views}
             </span>
           </div>
