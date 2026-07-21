@@ -30,7 +30,7 @@ export default function About() {
   }, []);
 
   return (
-    <section id="about" className="relative w-full py-12 md:py-20 lg:py-28 bg-gradient-to-b from-[#FAF5FF] to-[#F0F4FF] px-6 md:px-12 lg:px-20 overflow-hidden">
+    <section id="about" className="relative w-full py-12 md:py-20 lg:py-28 bg-gradient-to-b from-[#FAF5FF] to-[#F0F4FF] px-4 sm:px-8 md:px-12 lg:px-20 overflow-hidden scroll-mt-24">
       
       {/* Sparkles background layer */}
       <div className="absolute inset-0 pointer-events-none select-none opacity-40">

@@ -198,7 +198,7 @@ export default function Spotlight() {
   };
 
   return (
-    <section id="spotlight" className="relative w-full py-12 md:py-20 lg:py-28 px-6 md:px-12 lg:px-20 bg-white overflow-hidden border-b border-darkText/[0.02]">
+    <section id="spotlight" className="relative w-full py-12 md:py-20 lg:py-28 px-4 sm:px-8 md:px-12 lg:px-20 bg-white overflow-hidden border-b border-darkText/[0.02] scroll-mt-24">
       
       {/* Decorative floating clouds at the margins */}
       <div className="absolute inset-0 pointer-events-none select-none z-10 opacity-30">
@@ -209,24 +209,24 @@ export default function Spotlight() {
       <div className="max-w-[1500px] mx-auto relative z-20">
         
         {/* Spotlight title heading */}
-        <div className="text-center mb-16">
+        <div className="text-center mb-10 sm:mb-16">
           <span className="text-xs font-bold uppercase tracking-[0.2em] text-candy bg-candy/5 px-4.5 py-2 rounded-full mb-3 inline-block">
             Featured Spotlight
           </span>
-          <h2 className="font-heading text-4xl md:text-5xl text-darkText font-extrabold mb-4 leading-tight select-none">
+          <h2 className="font-heading text-3xl sm:text-4xl md:text-5xl text-darkText font-extrabold mb-4 leading-tight select-none">
             Meet Our Character Spotlight.
           </h2>
-          <p className="font-body text-base text-darkText/70 max-w-xl mx-auto">
+          <p className="font-body text-sm sm:text-base text-darkText/70 max-w-xl mx-auto">
             Take a close look at our featured star collectors of the week. Swipe or sit back as they rotate!
           </p>
         </div>
 
         {/* Slide deck showcase */}
-        <div className={`relative rounded-[40px] bg-gradient-to-tr ${current.bg} border border-white/60 p-4 sm:p-8 md:p-12 lg:p-16 shadow-xl transition-colors duration-700 min-h-[520px] flex items-center`}>
+        <div className={`relative rounded-[32px] sm:rounded-[40px] bg-gradient-to-tr ${current.bg} border border-white/60 p-5 sm:p-8 md:p-12 lg:p-16 shadow-xl transition-colors duration-700 min-h-0 flex items-center`}>
           
           {/* Glowing back-orb for the plush */}
           <div
-            className="absolute inset-0 rounded-[40px] blur-3xl opacity-20 transition-all duration-700"
+            className="absolute inset-0 rounded-[32px] sm:rounded-[40px] blur-3xl opacity-20 transition-all duration-700"
             style={{ backgroundColor: current.glow }}
           />
 
@@ -238,7 +238,7 @@ export default function Spotlight() {
               initial="enter"
               animate="center"
               exit="exit"
-              className="w-full grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-center relative z-10 px-8 sm:px-0"
+              className="w-full grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 lg:gap-14 items-center relative z-10 px-0"
             >
               {/* Image box (Left 55% on desktop layout) */}
               <div className="lg:col-span-6 flex justify-center relative">
@@ -320,37 +320,60 @@ export default function Spotlight() {
             </motion.div>
           </AnimatePresence>
 
-          {/* Left arrow button */}
+          {/* Left & Right arrow buttons (Desktop Overlay) */}
           <button
             onClick={handlePrev}
-            className="absolute left-4 lg:left-6 w-11 h-11 rounded-full bg-white/80 backdrop-blur-md border border-darkText/5 flex items-center justify-center text-darkText/60 hover:text-primary transition-all hover:scale-105 active:scale-95 shadow-sm z-30"
+            className="hidden sm:flex absolute left-4 lg:left-6 w-11 h-11 rounded-full bg-white/80 backdrop-blur-md border border-darkText/5 items-center justify-center text-darkText/60 hover:text-primary transition-all hover:scale-105 active:scale-95 shadow-sm z-30 cursor-pointer"
+            aria-label="Previous slide"
           >
             <ChevronLeft size={20} />
           </button>
 
-          {/* Right arrow button */}
           <button
             onClick={handleNext}
-            className="absolute right-4 lg:right-6 w-11 h-11 rounded-full bg-white/80 backdrop-blur-md border border-darkText/5 flex items-center justify-center text-darkText/60 hover:text-primary transition-all hover:scale-105 active:scale-95 shadow-sm z-30"
+            className="hidden sm:flex absolute right-4 lg:right-6 w-11 h-11 rounded-full bg-white/80 backdrop-blur-md border border-darkText/5 items-center justify-center text-darkText/60 hover:text-primary transition-all hover:scale-105 active:scale-95 shadow-sm z-30 cursor-pointer"
+            aria-label="Next slide"
           >
             <ChevronRight size={20} />
           </button>
         </div>
 
-        {/* Carousel indicators dots */}
-        <div className="flex justify-center gap-2 mt-8">
-          {spotlightSlides.map((_, idx) => (
-            <button
-              key={idx}
-              onClick={() => {
-                setDirection(idx > activeIndex ? 1 : -1);
-                setActiveIndex(idx);
-              }}
-              className={`h-2.5 rounded-full transition-all duration-300 ${
-                activeIndex === idx ? 'w-8 bg-primary' : 'w-2.5 bg-darkText/10 hover:bg-darkText/30'
-              }`}
-            />
-          ))}
+        {/* Mobile & Desktop Carousel Control Bar */}
+        <div className="flex items-center justify-center gap-4 mt-8">
+          {/* Mobile Prev Button */}
+          <button
+            onClick={handlePrev}
+            className="sm:hidden w-9 h-9 rounded-full bg-white border border-darkText/10 flex items-center justify-center text-darkText/70 active:scale-95 shadow-sm cursor-pointer"
+            aria-label="Previous slide"
+          >
+            <ChevronLeft size={18} />
+          </button>
+
+          {/* Dots */}
+          <div className="flex items-center gap-2">
+            {slides.map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => {
+                  setDirection(idx > activeIndex ? 1 : -1);
+                  setActiveIndex(idx);
+                }}
+                className={`h-2.5 rounded-full transition-all duration-300 cursor-pointer ${
+                  activeIndex === idx ? 'w-8 bg-primary' : 'w-2.5 bg-darkText/15 hover:bg-darkText/35'
+                }`}
+                aria-label={`Go to slide ${idx + 1}`}
+              />
+            ))}
+          </div>
+
+          {/* Mobile Next Button */}
+          <button
+            onClick={handleNext}
+            className="sm:hidden w-9 h-9 rounded-full bg-white border border-darkText/10 flex items-center justify-center text-darkText/70 active:scale-95 shadow-sm cursor-pointer"
+            aria-label="Next slide"
+          >
+            <ChevronRight size={18} />
+          </button>
         </div>
 
       </div>

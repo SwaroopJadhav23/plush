@@ -28,7 +28,7 @@ const contactCards = [
 
 export default function Contact() {
   return (
-    <section id="contact" className="relative mt-12 md:mt-24">
+    <section id="contact" className="relative pt-20 md:pt-28 pb-6 scroll-mt-24">
       {/* Self-contained CSS styles for the shooting star */}
       <style>{`
         @keyframes shooting-star-anim {

@@ -37,7 +37,7 @@ export default function HowItWorks() {
   };
 
   return (
-    <section id="faq" className="relative w-full py-12 md:py-20 lg:py-24 bg-[#F0F9FF] px-6 md:px-12 lg:px-20 border-b border-darkText/[0.01]">
+    <section id="faq" className="relative w-full py-12 md:py-20 lg:py-24 bg-[#F0F9FF] px-4 sm:px-8 md:px-12 lg:px-20 border-b border-darkText/[0.01] overflow-hidden scroll-mt-24">
       <div className="max-w-[1400px] mx-auto">
         {/* FAQ Header */}
         <div className="text-center mb-16">

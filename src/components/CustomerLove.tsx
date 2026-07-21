@@ -10,7 +10,7 @@ const reviews = [
     avatarBg: 'bg-gradient-soft-pink',
     floatDelay: 0,
     mascotSrc: '/snorlax.png',
-    mascotClass: 'w-20 h-20 -top-10 -right-6',
+    mascotClass: 'w-16 h-16 sm:w-20 sm:h-20 -top-8 right-2 sm:-top-10 sm:-right-4',
   },
   {
     quote: "Oh my god, the strawberry Lotso bear actually smells like fresh strawberries! WhatsApp support was incredibly helpful and sweet! 🍓",
@@ -20,7 +20,7 @@ const reviews = [
     avatarBg: 'bg-gradient-soft-yellow',
     floatDelay: 0.4,
     mascotSrc: '/lotso.png',
-    mascotClass: 'w-20 h-20 -bottom-8 -right-4',
+    mascotClass: 'w-16 h-16 sm:w-20 sm:h-20 -bottom-6 right-2 sm:-bottom-8 sm:-right-4',
   },
   {
     quote: "The Loopy plushie is viral for a reason, and it is so hard to find genuine ones in India. Thank you for importing these cute treasures! 💖",
@@ -30,7 +30,7 @@ const reviews = [
     avatarBg: 'bg-gradient-soft-blue',
     floatDelay: 0.2,
     mascotSrc: '/loopy.png',
-    mascotClass: 'w-22 h-22 -top-12 -left-6',
+    mascotClass: 'w-16 h-16 sm:w-22 sm:h-22 -top-8 left-2 sm:-top-12 sm:-left-4',
   },
   {
     quote: "Super premium quality and incredibly safe packaging. It arrived in a thick carton box with dust wrapping. 10/10 service!",
@@ -40,7 +40,7 @@ const reviews = [
     avatarBg: 'bg-gradient-soft-mint',
     floatDelay: 0.6,
     mascotSrc: '/bunny.png',
-    mascotClass: 'w-18 h-18 -bottom-10 -left-6',
+    mascotClass: 'w-16 h-16 sm:w-18 sm:h-18 -bottom-6 left-2 sm:-bottom-10 sm:-left-4',
   },
 ];
 
@@ -61,7 +61,7 @@ const item: any = {
 
 export default function CustomerLove() {
   return (
-    <section id="reviews" className="relative w-full py-12 md:py-20 lg:py-28 bg-gradient-to-b from-[#FAF5FF] to-[#FFF0F6] px-6 md:px-12 lg:px-20 overflow-hidden">
+    <section id="reviews" className="relative w-full py-12 md:py-20 lg:py-28 bg-gradient-to-b from-[#FAF5FF] to-[#FFF0F6] px-4 sm:px-8 md:px-12 lg:px-20 overflow-hidden scroll-mt-24">
       
       {/* Sparkles decoration */}
       <div className="absolute inset-0 pointer-events-none select-none z-10 opacity-30">
