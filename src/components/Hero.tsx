@@ -12,7 +12,7 @@ const floatingCharacters = [
     name: 'Loopy',
     src: '/loopy.png',
     position: 'top-[12%] left-[4%] md:top-[15%] md:left-[6%]',
-    size: 'w-24 h-24 sm:w-28 sm:h-28 md:w-40 md:h-40',
+    size: 'w-14 h-14 sm:w-20 sm:h-20 md:w-28 md:h-28 lg:w-40 lg:h-40',
     floatDuration: 5,
     tiltDuration: 7,
     glowColor: 'rgba(255, 111, 181, 0.35)',
@@ -22,7 +22,7 @@ const floatingCharacters = [
     name: 'Lotso',
     src: '/lotso.png',
     position: 'bottom-[12%] left-[3%] md:bottom-[15%] md:left-[8%]',
-    size: 'w-24 h-24 sm:w-30 sm:h-30 md:w-44 md:h-44',
+    size: 'w-14 h-14 sm:w-20 sm:h-20 md:w-30 md:h-30 lg:w-44 lg:h-44',
     floatDuration: 6,
     tiltDuration: 8,
     glowColor: 'rgba(255, 111, 181, 0.45)',
@@ -32,7 +32,7 @@ const floatingCharacters = [
     name: 'Snorlax',
     src: '/snorlax.png',
     position: 'top-[8%] right-[4%] md:top-[12%] md:right-[6%]',
-    size: 'w-26 h-26 sm:w-32 sm:h-32 md:w-48 md:h-48',
+    size: 'w-16 h-16 sm:w-22 sm:h-22 md:w-32 md:h-32 lg:w-48 lg:h-48',
     floatDuration: 7,
     tiltDuration: 9,
     glowColor: 'rgba(102, 217, 255, 0.35)',
@@ -42,7 +42,7 @@ const floatingCharacters = [
     name: 'Bunny',
     src: '/bunny.png',
     position: 'bottom-[8%] right-[3%] md:bottom-[10%] md:right-[6%]',
-    size: 'w-24 h-24 sm:w-28 sm:h-28 md:w-40 md:h-40',
+    size: 'w-14 h-14 sm:w-20 sm:h-20 md:w-28 md:h-28 lg:w-40 lg:h-40',
     floatDuration: 5.5,
     tiltDuration: 7.5,
     glowColor: 'rgba(255, 213, 79, 0.35)',
@@ -52,7 +52,7 @@ const floatingCharacters = [
     name: 'Purple Plush',
     src: '/purple_long.png',
     position: 'top-[38%] right-[12%] md:top-[40%] md:right-[16%] lg:right-[20%]',
-    size: 'w-20 h-20 sm:w-24 sm:h-24 md:w-36 md:h-36',
+    size: 'w-12 h-12 sm:w-16 sm:h-16 md:w-24 md:h-24 lg:w-36 lg:h-36',
     floatDuration: 6.5,
     tiltDuration: 8.5,
     glowColor: 'rgba(124, 58, 237, 0.35)',
@@ -137,11 +137,11 @@ export default function Hero({ introStage = 'complete' }: HeroProps) {
 
       {/* 2. Floating Characters */}
       {!isPlaying && (
-        <div className="absolute inset-0 w-full h-full pointer-events-none z-20 hidden lg:block">
+        <div className="absolute inset-0 w-full h-full pointer-events-none z-20 block">
           {characters.map((char, index) => (
             <motion.div
               key={char.name}
-              className={`absolute ${char.position} pointer-events-auto`}
+              className={`absolute ${char.position} ${char.size} pointer-events-auto ${char.name === 'Purple Plush' ? 'hidden lg:block' : 'block'}`}
               initial={{ opacity: 0, scale: 0.7, y: 50 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               transition={{
@@ -171,7 +171,7 @@ export default function Hero({ introStage = 'complete' }: HeroProps) {
                   },
                 }}
                 whileHover={{ scale: 1.07 }}
-                className="relative group cursor-pointer"
+                className="relative group cursor-pointer w-full h-full"
               >
                 {/* Glow ring */}
                 <div
@@ -183,11 +183,10 @@ export default function Hero({ introStage = 'complete' }: HeroProps) {
                 <img
                   src={char.src}
                   alt={char.name}
-                  className="relative z-10 w-auto h-auto object-contain filter drop-shadow-[0_12px_28px_rgba(45,45,45,0.06)] group-hover:drop-shadow-[0_16px_36px_rgba(45,45,45,0.12)] transition-all duration-500 rounded-3xl"
+                  className="relative z-10 w-full h-full object-contain filter drop-shadow-[0_12px_28px_rgba(45,45,45,0.06)] group-hover:drop-shadow-[0_16px_36px_rgba(45,45,45,0.12)] transition-all duration-500 rounded-3xl"
                   style={{
                     width: '100%',
                     height: '100%',
-                    maxWidth: '200px',
                   }}
                 />
 
