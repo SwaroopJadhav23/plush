@@ -344,17 +344,17 @@ export default function ProductDetails({ slug }: ProductDetailsProps) {
             {/* Coupon Code Section */}
             <div className="bg-[#FAF5FF] border border-primary/10 p-5 sm:p-6 rounded-3xl mb-8 flex flex-col gap-3 font-body">
               <span className="text-xs font-bold text-darkText/70 uppercase tracking-wider block">Have a Discount Coupon?</span>
-              <div className="flex gap-2.5 items-center">
+              <div className="flex flex-col sm:flex-row gap-2.5 items-stretch sm:items-center">
                 <input 
                   type="text" 
                   placeholder="ENTER CODE (E.G. WELCOME10)" 
                   value={couponInput}
                   onChange={(e) => setCouponInput(e.target.value.toUpperCase())}
-                  className="flex-1 bg-white border border-darkText/10 rounded-2xl px-4 h-12 text-xs sm:text-sm font-bold uppercase tracking-wider focus:outline-none focus:border-primary/50"
+                  className="w-full sm:flex-1 bg-white border border-darkText/10 rounded-2xl px-4 h-12 text-xs sm:text-sm font-bold uppercase tracking-wider focus:outline-none focus:border-primary/50"
                 />
                 <button 
                   onClick={handleApplyCoupon}
-                  className="bg-primary hover:bg-primary/95 text-white font-heading font-extrabold text-xs sm:text-sm px-6 h-12 rounded-2xl shadow-sm transition-all cursor-pointer flex items-center justify-center shrink-0"
+                  className="w-full sm:w-auto bg-primary hover:bg-primary/95 text-white font-heading font-extrabold text-xs sm:text-sm px-6 h-12 rounded-2xl shadow-sm transition-all cursor-pointer flex items-center justify-center shrink-0"
                 >
                   Apply
                 </button>
@@ -376,7 +376,7 @@ export default function ProductDetails({ slug }: ProductDetailsProps) {
               onClick={handleOrder}
               whileHover={{ scale: 1.02, y: -2 }}
               whileTap={{ scale: 0.98 }}
-              className="w-full bg-gradient-to-r from-[#25D366] via-[#20BD5A] to-[#128C7E] text-white font-heading font-extrabold py-4 px-8 rounded-full flex items-center justify-center gap-3 shadow-[0_4px_18px_rgba(37,211,102,0.25)] hover:shadow-[0_8px_25px_rgba(37,211,102,0.4)] transition-all cursor-pointer text-base md:text-lg tracking-wide group"
+              className="hidden lg:flex w-full bg-gradient-to-r from-[#25D366] via-[#20BD5A] to-[#128C7E] text-white font-heading font-extrabold py-4 px-8 rounded-full items-center justify-center gap-3 shadow-[0_4px_18px_rgba(37,211,102,0.25)] hover:shadow-[0_8px_25px_rgba(37,211,102,0.4)] transition-all cursor-pointer text-base md:text-lg tracking-wide group"
             >
               <img 
                 src="/whatsapp.png" 
