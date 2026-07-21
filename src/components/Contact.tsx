@@ -46,7 +46,7 @@ export default function Contact() {
   }, []);
 
   return (
-    <section id="contact" className="relative pt-28 sm:pt-32 md:pt-36 pb-12 overflow-hidden scroll-mt-28">
+    <section id="contact" className="relative pt-28 sm:pt-32 md:pt-36 pb-0 overflow-hidden scroll-mt-28">
       {/* Self-contained CSS styles for the shooting star */}
       <style>{`
         @keyframes shooting-star-anim {
@@ -196,16 +196,16 @@ export default function Contact() {
             </div>
 
             {/* Cloud representation under Snorlax */}
-            <div className="relative w-32 h-20 flex items-center justify-center">
-              <svg className="absolute bottom-0 w-full h-12 text-white/10 fill-current" viewBox="0 0 100 50">
+            <div className="relative w-44 h-28 flex items-center justify-center">
+              <svg className="absolute bottom-0 w-full h-16 text-white/10 fill-current" viewBox="0 0 100 50">
                 <path d="M 10,40 A 12,12 0 0,1 30,20 A 15,15 0 0,1 70,20 A 12,12 0 0,1 90,40 Z" />
               </svg>
               <motion.img
                 src={snorlaxImg}
                 alt="Sleeping Snorlax"
-                animate={{ y: [-2, 2, -2] }}
+                animate={{ y: [-3, 3, -3] }}
                 transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-                className="w-20 h-20 object-contain relative z-10 filter drop-shadow-md"
+                className="w-28 h-28 object-contain relative z-10 filter drop-shadow-md"
               />
             </div>
             <span className="text-[10px] text-white/40 tracking-wider font-bold mt-1">Snorlax is sleeping... Shh! 🤫</span>
