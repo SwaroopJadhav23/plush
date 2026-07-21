@@ -13,7 +13,10 @@ import {
   Lock, 
   X,
   Menu,
-  Percent
+  Percent,
+  Eye,
+  EyeOff,
+  CheckCircle2
 } from 'lucide-react';
 import { 
   fetchProducts, 
@@ -40,6 +43,12 @@ export default function AdminDashboard() {
   const [password, setPassword] = useState('');
   const [loginMethod, setLoginMethod] = useState<'pin' | 'password'>('pin');
   const [authError, setAuthError] = useState('');
+
+  // Password visibility states
+  const [showPin, setShowPin] = useState(false);
+  const [showLoginPassword, setShowLoginPassword] = useState(false);
+  const [showNewPin, setShowNewPin] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
 
   const [activeTab, setActiveTab] = useState<'analytics' | 'products' | 'sections' | 'coupons' | 'security'>('products');
   const [hoveredAssetKey, setHoveredAssetKey] = useState<string | null>(null);
@@ -152,7 +161,7 @@ export default function AdminDashboard() {
       
       const response = await updateSecuritySettings(payload);
       if (response.success) {
-        setSecuritySuccessMessage(response.message || 'Credentials updated successfully!');
+        setSecuritySuccessMessage(response.message || 'Credentials updated');
         if (response.data) {
           setSecurityConfig(response.data);
           setNewPin(response.data.pin || '');
@@ -368,13 +377,23 @@ export default function AdminDashboard() {
 
           <form onSubmit={handleLogin} className="flex flex-col gap-4">
             {loginMethod === 'pin' ? (
-              <input
-                type="password"
-                placeholder="Enter PIN (e.g. 1234)"
-                value={pin}
-                onChange={(e) => setPin(e.target.value)}
-                className="w-full bg-white border border-darkText/10 rounded-2xl py-4 px-6 text-center text-lg font-bold tracking-widest focus:outline-none focus:border-primary/50"
-              />
+              <div className="relative w-full">
+                <input
+                  type={showPin ? "text" : "password"}
+                  placeholder="Enter PIN (e.g. 1234)"
+                  value={pin}
+                  onChange={(e) => setPin(e.target.value)}
+                  className="w-full bg-white border border-darkText/10 rounded-2xl py-4 pl-6 pr-12 text-center text-lg font-bold tracking-widest focus:outline-none focus:border-primary/50"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPin(!showPin)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-darkText/40 hover:text-darkText focus:outline-none transition-colors p-1 cursor-pointer"
+                  aria-label="Toggle PIN visibility"
+                >
+                  {showPin ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+              </div>
             ) : (
               <div className="flex flex-col gap-3">
                 <input
@@ -384,13 +403,23 @@ export default function AdminDashboard() {
                   onChange={(e) => setUsername(e.target.value)}
                   className="w-full bg-white border border-darkText/10 rounded-2xl py-3.5 px-5 text-sm font-semibold focus:outline-none focus:border-primary/50 text-left"
                 />
-                <input
-                  type="password"
-                  placeholder="Enter Password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full bg-white border border-darkText/10 rounded-2xl py-3.5 px-5 text-sm font-semibold focus:outline-none focus:border-primary/50 text-left"
-                />
+                <div className="relative w-full">
+                  <input
+                    type={showLoginPassword ? "text" : "password"}
+                    placeholder="Enter Password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="w-full bg-white border border-darkText/10 rounded-2xl py-3.5 pl-5 pr-12 text-sm font-semibold focus:outline-none focus:border-primary/50 text-left"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowLoginPassword(!showLoginPassword)}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-darkText/40 hover:text-darkText focus:outline-none transition-colors p-1 cursor-pointer"
+                    aria-label="Toggle password visibility"
+                  >
+                    {showLoginPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
+                </div>
               </div>
             )}
             {authError && <p className="text-xs text-candy font-bold">{authError}</p>}
@@ -1206,6 +1235,23 @@ export default function AdminDashboard() {
             {activeTab === 'security' && (
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
                 
+                {/* Messages notifications */}
+                {(securitySuccessMessage || securityErrorMessage) && (
+                  <div className="col-span-12 font-body text-center mb-2">
+                    {securitySuccessMessage && (
+                      <div className="flex items-center justify-center gap-2.5 bg-emerald-500/10 border border-emerald-500/30 text-emerald-700 py-3.5 px-6 rounded-2xl shadow-sm animate-bounce-short">
+                        <CheckCircle2 size={20} className="text-emerald-600 shrink-0" />
+                        <span className="font-extrabold text-base text-emerald-800 tracking-wide uppercase">
+                          {securitySuccessMessage}
+                        </span>
+                      </div>
+                    )}
+                    {securityErrorMessage && (
+                      <p className="text-candy bg-candy/10 border border-candy/20 p-3.5 rounded-2xl font-bold">{securityErrorMessage}</p>
+                    )}
+                  </div>
+                )}
+
                 {/* PIN Configuration Card */}
                 <div className="col-span-12 lg:col-span-6 bg-white/60 backdrop-blur-xl border border-white/50 rounded-3xl p-5 sm:p-8 shadow-sm h-fit">
                   <div className="flex items-center gap-3 mb-6">
@@ -1221,14 +1267,24 @@ export default function AdminDashboard() {
                   <form onSubmit={(e) => handleSecurityUpdate(e, 'pin')} className="flex flex-col gap-4 font-body text-sm font-semibold">
                     <div className="flex flex-col gap-1.5">
                       <label className="text-xs text-darkText/50">New PIN Code</label>
-                      <input 
-                        type="password" 
-                        placeholder="Enter new PIN code"
-                        value={newPin}
-                        onChange={(e) => setNewPin(e.target.value)}
-                        required
-                        className="w-full bg-white border border-darkText/10 rounded-2xl py-3.5 px-4 font-bold text-lg tracking-widest focus:outline-none focus:border-primary/50 text-center"
-                      />
+                      <div className="relative w-full">
+                        <input 
+                          type={showNewPin ? "text" : "password"} 
+                          placeholder="Enter new PIN code"
+                          value={newPin}
+                          onChange={(e) => setNewPin(e.target.value)}
+                          required
+                          className="w-full bg-white border border-darkText/10 rounded-2xl py-3.5 pl-4 pr-12 font-bold text-lg tracking-widest focus:outline-none focus:border-primary/50 text-center"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowNewPin(!showNewPin)}
+                          className="absolute right-4 top-1/2 -translate-y-1/2 text-darkText/40 hover:text-darkText focus:outline-none transition-colors p-1 cursor-pointer"
+                          aria-label="Toggle PIN visibility"
+                        >
+                          {showNewPin ? <EyeOff size={20} /> : <Eye size={20} />}
+                        </button>
+                      </div>
                     </div>
 
                     <button
@@ -1267,14 +1323,24 @@ export default function AdminDashboard() {
 
                     <div className="flex flex-col gap-1.5">
                       <label className="text-xs text-darkText/50">New Password</label>
-                      <input 
-                        type="password" 
-                        placeholder="Enter new password"
-                        value={newPassword}
-                        onChange={(e) => setNewPassword(e.target.value)}
-                        required
-                        className="w-full bg-white border border-darkText/10 rounded-2xl py-3.5 px-4 focus:outline-none focus:border-primary/50 text-left font-bold"
-                      />
+                      <div className="relative w-full">
+                        <input 
+                          type={showNewPassword ? "text" : "password"} 
+                          placeholder="Enter new password"
+                          value={newPassword}
+                          onChange={(e) => setNewPassword(e.target.value)}
+                          required
+                          className="w-full bg-white border border-darkText/10 rounded-2xl py-3.5 pl-4 pr-12 focus:outline-none focus:border-primary/50 text-left font-bold"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowNewPassword(!showNewPassword)}
+                          className="absolute right-4 top-1/2 -translate-y-1/2 text-darkText/40 hover:text-darkText focus:outline-none transition-colors p-1 cursor-pointer"
+                          aria-label="Toggle password visibility"
+                        >
+                          {showNewPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                        </button>
+                      </div>
                     </div>
 
                     <button
@@ -1285,18 +1351,6 @@ export default function AdminDashboard() {
                     </button>
                   </form>
                 </div>
-
-                {/* Messages notifications */}
-                {(securitySuccessMessage || securityErrorMessage) && (
-                  <div className="col-span-12 p-2 rounded-2xl font-body text-xs font-bold text-center mt-2">
-                    {securitySuccessMessage && (
-                      <p className="text-mint bg-mint/10 border border-mint/20 p-3.5 rounded-2xl">{securitySuccessMessage}</p>
-                    )}
-                    {securityErrorMessage && (
-                      <p className="text-candy bg-candy/10 border border-candy/20 p-3.5 rounded-2xl">{securityErrorMessage}</p>
-                    )}
-                  </div>
-                )}
 
               </div>
             )}

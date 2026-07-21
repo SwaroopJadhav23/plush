@@ -68,7 +68,7 @@ router.post('/update', async (req, res) => {
     await security.save();
     res.json({ 
       success: true, 
-      message: 'Credentials updated successfully',
+      message: 'Credentials updated',
       data: {
         pin: security.pin,
         username: security.username,
