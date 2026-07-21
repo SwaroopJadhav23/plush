@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { ChevronLeft, ChevronRight, MessageCircle, Star, Sparkles } from 'lucide-react';
-import { API_BASE_URL } from '../config/api';
+import { API_BASE_URL, WHATSAPP_NUMBER } from '../config/api';
 
 interface Slide {
   id: number;
@@ -153,7 +153,7 @@ export default function Spotlight() {
   const handleOrder = () => {
     const message = `Hello Plush.Palz! 👋\n\nI want to order this featured spotlight plush!\n\n🌸 Product: *${current.name}*\n💰 Price: *${current.price}*\n\nPlease confirm availability!\n\nThank you! ✨`;
     const encoded = encodeURIComponent(message);
-    const waUrl = `https://wa.me/918530595740?text=${encoded}`;
+    const waUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encoded}`;
     window.open(waUrl, '_blank');
   };
 

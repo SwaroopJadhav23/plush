@@ -1,6 +1,10 @@
 const rawApiUrl = (import.meta.env.VITE_API_BASE_URL as string) || 'http://localhost:5000';
 export const API_BASE_URL = rawApiUrl.replace(/\/+$/, '');
 
+export const WHATSAPP_NUMBER = '918459573778';
+export const WHATSAPP_DISPLAY_NUMBER = '+91 84595 73778';
+
+
 
 export interface ProductData {
   id?: number;

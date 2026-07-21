@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { Mail, Instagram, MessageCircle, MapPin, Star } from 'lucide-react';
+import { WHATSAPP_NUMBER, WHATSAPP_DISPLAY_NUMBER } from '../config/api';
 
 const contactCards = [
   {
@@ -11,9 +12,9 @@ const contactCards = [
   },
   {
     icon: MessageCircle,
-    label: 'WhatsApp Orders',
-    value: '+91 85305 95740',
-    href: 'https://wa.me/918530595740',
+    label: 'WhatsApp Orders (Vibhooti Sharma)',
+    value: WHATSAPP_DISPLAY_NUMBER,
+    href: `https://wa.me/${WHATSAPP_NUMBER}`,
     color: 'hover:border-[#25D366]/30 hover:text-[#25D366]',
   },
   {

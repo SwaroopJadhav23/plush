@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Heart, Share2, MessageCircle, ChevronLeft, Star, Sparkles, HelpCircle, ChevronDown, Play, Instagram } from 'lucide-react';
 import { products, Product } from './Creations';
-import { API_BASE_URL, validateCoupon, logProductClick } from '../config/api';
+import { API_BASE_URL, WHATSAPP_NUMBER, validateCoupon, logProductClick } from '../config/api';
 
 interface ProductDetailsProps {
   slug: string;
@@ -126,7 +126,7 @@ export default function ProductDetails({ slug }: ProductDetailsProps) {
 
     message += `\nPlease let me know if it's available.\n\nThank you! ✨`;
     const encoded = encodeURIComponent(message);
-    const waUrl = `https://wa.me/918530595740?text=${encoded}`;
+    const waUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encoded}`;
     window.open(waUrl, '_blank');
   };
 
